@@ -8,12 +8,15 @@
 
 /* Begin PBXBuildFile section */
 		5CBC517221E93F9B0079378B /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CBC517121E93F9B0079378B /* AppDelegate.swift */; };
-		5CBC517421E93F9B0079378B /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CBC517321E93F9B0079378B /* ViewController.swift */; };
+		5CBC517421E93F9B0079378B /* MapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CBC517321E93F9B0079378B /* MapViewController.swift */; };
 		5CBC517721E93F9B0079378B /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5CBC517521E93F9B0079378B /* Main.storyboard */; };
 		5CBC517921E93F9D0079378B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5CBC517821E93F9D0079378B /* Assets.xcassets */; };
 		5CBC517C21E93F9D0079378B /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5CBC517A21E93F9D0079378B /* LaunchScreen.storyboard */; };
 		5CBC518721E93F9D0079378B /* ANGTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CBC518621E93F9D0079378B /* ANGTests.swift */; };
 		5CBC519221E93F9D0079378B /* ANGUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CBC519121E93F9D0079378B /* ANGUITests.swift */; };
+		5CBC51A021E940BD0079378B /* Cafe.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CBC519F21E940BD0079378B /* Cafe.swift */; };
+		5CBC51A421E941810079378B /* Location.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CBC51A321E941810079378B /* Location.swift */; };
+		5CBC51A621E9423D0079378B /* CafesLocations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CBC51A521E9423D0079378B /* CafesLocations.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -36,7 +39,7 @@
 /* Begin PBXFileReference section */
 		5CBC516E21E93F9B0079378B /* ANG.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ANG.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		5CBC517121E93F9B0079378B /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		5CBC517321E93F9B0079378B /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		5CBC517321E93F9B0079378B /* MapViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapViewController.swift; sourceTree = "<group>"; };
 		5CBC517621E93F9B0079378B /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		5CBC517821E93F9D0079378B /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		5CBC517B21E93F9D0079378B /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
@@ -47,6 +50,9 @@
 		5CBC518D21E93F9D0079378B /* ANGUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ANGUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		5CBC519121E93F9D0079378B /* ANGUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ANGUITests.swift; sourceTree = "<group>"; };
 		5CBC519321E93F9D0079378B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		5CBC519F21E940BD0079378B /* Cafe.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Cafe.swift; sourceTree = "<group>"; };
+		5CBC51A321E941810079378B /* Location.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Location.swift; sourceTree = "<group>"; };
+		5CBC51A521E9423D0079378B /* CafesLocations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CafesLocations.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -98,7 +104,8 @@
 			isa = PBXGroup;
 			children = (
 				5CBC517121E93F9B0079378B /* AppDelegate.swift */,
-				5CBC517321E93F9B0079378B /* ViewController.swift */,
+				5CBC51A121E940C10079378B /* Model */,
+				5CBC51A221E940D10079378B /* View Controller */,
 				5CBC517521E93F9B0079378B /* Main.storyboard */,
 				5CBC517821E93F9D0079378B /* Assets.xcassets */,
 				5CBC517A21E93F9D0079378B /* LaunchScreen.storyboard */,
@@ -123,6 +130,24 @@
 				5CBC519321E93F9D0079378B /* Info.plist */,
 			);
 			path = ANGUITests;
+			sourceTree = "<group>";
+		};
+		5CBC51A121E940C10079378B /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				5CBC519F21E940BD0079378B /* Cafe.swift */,
+				5CBC51A521E9423D0079378B /* CafesLocations.swift */,
+				5CBC51A321E941810079378B /* Location.swift */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
+		5CBC51A221E940D10079378B /* View Controller */ = {
+			isa = PBXGroup;
+			children = (
+				5CBC517321E93F9B0079378B /* MapViewController.swift */,
+			);
+			path = "View Controller";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -256,8 +281,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5CBC517421E93F9B0079378B /* ViewController.swift in Sources */,
+				5CBC517421E93F9B0079378B /* MapViewController.swift in Sources */,
 				5CBC517221E93F9B0079378B /* AppDelegate.swift in Sources */,
+				5CBC51A421E941810079378B /* Location.swift in Sources */,
+				5CBC51A021E940BD0079378B /* Cafe.swift in Sources */,
+				5CBC51A621E9423D0079378B /* CafesLocations.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
