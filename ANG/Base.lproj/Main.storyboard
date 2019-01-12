@@ -13,7 +13,7 @@
         <!--Alzheimer Cafés-->
         <scene sceneID="tne-QT-ifu">
             <objects>
-                <viewController id="BYZ-38-t0r" customClass="MapViewController" customModule="ANG" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="BYZ-38-t0r" customClass="CafeMapViewController" customModule="ANG" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -33,12 +33,45 @@
                     </view>
                     <navigationItem key="navigationItem" title="Alzheimer Cafés" id="lCg-OQ-5y3"/>
                     <connections>
-                        <outlet property="mapForCafes" destination="IYB-sG-I1G" id="wEo-LE-53P"/>
+                        <outlet property="cafesMap" destination="IYB-sG-I1G" id="wEo-LE-53P"/>
+                        <segue destination="a9t-6d-RQP" kind="show" identifier="CafeDetailSegue" id="MA2-PZ-rgO"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2015.2" y="133.5832083958021"/>
+            <point key="canvasLocation" x="1993" y="134"/>
+        </scene>
+        <!--Cafe Detail Table View Controller-->
+        <scene sceneID="x6k-fo-Q69">
+            <objects>
+                <tableViewController id="a9t-6d-RQP" customClass="CafeDetailTableViewController" customModule="ANG" customModuleProvider="target" sceneMemberID="viewController">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="static" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" id="zTX-mp-4Nh">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <sections>
+                            <tableViewSection id="y57-ub-pIw">
+                                <cells>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" id="ha7-JY-Bwp">
+                                        <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="ha7-JY-Bwp" id="1ap-ao-RJb">
+                                            <rect key="frame" x="0.0" y="0.0" width="375" height="43.5"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                        </tableViewCellContentView>
+                                    </tableViewCell>
+                                </cells>
+                            </tableViewSection>
+                        </sections>
+                        <connections>
+                            <outlet property="dataSource" destination="a9t-6d-RQP" id="ScO-bP-CAq"/>
+                            <outlet property="delegate" destination="a9t-6d-RQP" id="fBq-QX-9t0"/>
+                        </connections>
+                    </tableView>
+                </tableViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="CiN-xn-que" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2761" y="134"/>
         </scene>
         <!--Cafés-->
         <scene sceneID="Oao-hM-fMd">
@@ -65,6 +98,7 @@
                 <tabBarController automaticallyAdjustsScrollViewInsets="NO" id="lCx-Q9-CPH" sceneMemberID="viewController">
                     <toolbarItems/>
                     <tabBar key="tabBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="cQH-RT-Iqo">
+                        <rect key="frame" x="0.0" y="0.0" width="1000" height="1000"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                     </tabBar>
