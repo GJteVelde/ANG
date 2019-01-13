@@ -42,20 +42,22 @@ class CafeMapViewController: UIViewController {
         ]
         
         //Center of mapForCafes
-        let region = CafeLocation.centerMapAround(CafeLocation.returnAllAsAnnotations())
+        //Create array from Cafes.all dictionary
+        let cafes: [Cafe] = Cafes.all.map { $0.value }
+        let annotations = AnnotatedLocation.returnAnnotations(of: cafes)
+        let region = AnnotatedLocation.centerMapAround(annotations)
         cafesMap.setRegion(region, animated: true)
-
         
         //Show cafés on the map.
         cafesMap.delegate = self
-        cafesMap.addAnnotations(CafeLocation.returnAllAsAnnotations())
+        cafesMap.addAnnotations(annotations)
     }
 }
 
 extension CafeMapViewController: MKMapViewDelegate {
     //Show MkAnnotationViews on map and create segue to CafeDetailViewController.
     func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
-        guard let annotation = annotation as? CafeLocation else { return nil }
+        guard let annotation = annotation as? AnnotatedLocation else { return nil }
         
         let identifier = "cafe"
         var view: MKMarkerAnnotationView
@@ -79,7 +81,9 @@ extension CafeMapViewController: MKMapViewDelegate {
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "CafeDetailSegue" {
             let destinationVC = segue.destination as! CafeDetailTableViewController
-            destinationVC.navigationItem.title = (sender as! MKAnnotationView).annotation!.title!
+            let selectedCafe = (sender as! MKAnnotationView).annotation!.title!
+            destinationVC.navigationItem.title = selectedCafe
+            destinationVC.selectedCafe = selectedCafe?.replacingOccurrences(of: "Alzheimer Café ", with: "")
         }
     }
 }

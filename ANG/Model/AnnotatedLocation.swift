@@ -9,37 +9,48 @@
 import Foundation
 import MapKit
 
-class CafeLocation: NSObject, MKAnnotation {
+class AnnotatedLocation: NSObject, MKAnnotation {
     var coordinate: CLLocationCoordinate2D
     var title: String?
     var subtitle: String?
     
-    init(coordinate: CLLocationCoordinate2D, title: String, subtitle: String) {
+    init(coordinate: CLLocationCoordinate2D, title: String?, subtitle: String?) {
         self.coordinate = coordinate
         self.title = title
         self.subtitle = subtitle
     }
 }
 
-extension CafeLocation {
-    
-    //Return all cafe-related locations as MKAnnotation to show on the map.
-    static func returnAllAsAnnotations() -> [MKAnnotation] {
-        var cafes = [MKAnnotation]()
+extension AnnotatedLocation {
+    //Return locations of cafe(s) as MKAnnotations to show on the map
+    static func returnAnnotations(of cafes: [Cafe]) -> [MKAnnotation] {
+        var annotations = [MKAnnotation]()
         
-        for cafe in Cafes.all {
-            for cafeLocation in cafe.value.locations {
+        for cafe in cafes {
+            for cafeLocation in cafe.locations {
                 if let location = Locations.all[cafeLocation] {
-                    cafes.append(CafeLocation(coordinate: location.coordinate, title: cafe.value.nameLong, subtitle: location.nameLong))
+                    annotations.append(AnnotatedLocation(coordinate: location.coordinate, title: cafe.nameLong, subtitle: location.nameLong))
                 } else {
-                    print("CafesLocations: Could not find location \(cafeLocation)")
+                    print("CafeLocation: Could not find location \(cafeLocation) of \(cafe.nameLong)")
                 }
             }
         }
-        return cafes
+        
+        return annotations
     }
     
-    //Automatically center map around input-locations with span of + 50%.
+    //Return locations as MKAnnotations to show on the map of an individual cafe.
+    static func returnAnnotations(of locations: [Location]) -> [MKAnnotation] {
+        var annotations = [MKAnnotation]()
+        
+        for location in locations {
+            annotations.append(AnnotatedLocation(coordinate: location.coordinate, title: location.nameLong, subtitle: nil))
+        }
+        
+        return annotations
+    }
+    
+    //Automatically center map around input-locations
     static func centerMapAround(_ annotations: [MKAnnotation]) -> MKCoordinateRegion {
         var region = MKCoordinateRegion()
         
@@ -75,11 +86,19 @@ extension CafeLocation {
         
         region.center = CLLocationCoordinate2D(latitude: averageLatitude, longitude: averageLongitude)
         
-        //Calculate the span based on difference between minimum and maximum values and + 50%.
-        let spanLatitude = (coordinateMaximum.latitude - coordinateMinimum.latitude) * 1.5
-        let spanLongitude = (coordinateMaximum.longitude - coordinateMinimum.longitude) * 1.5
+        //If annotations.count == 1, return 0.1 span as there won't be a difference between minimum and maximum values.
+        //Else, calculate the span based on difference between minimum and maximum values and + 50%
+        var regionSpan = MKCoordinateSpan()
         
-        region.span = MKCoordinateSpan(latitudeDelta: spanLatitude, longitudeDelta: spanLongitude)
+        if annotations.count == 1 {
+            regionSpan.latitudeDelta = 0.01
+            regionSpan.longitudeDelta = 0.01
+        } else {
+            regionSpan.latitudeDelta = (coordinateMaximum.latitude - coordinateMinimum.latitude) * 1.5
+            regionSpan.longitudeDelta = (coordinateMaximum.longitude - coordinateMinimum.longitude) * 1.5
+        }
+        
+        region.span = regionSpan
         
         return region
     }

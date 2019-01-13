@@ -7,84 +7,84 @@
 //
 
 import UIKit
+import MapKit
 
 class CafeDetailTableViewController: UITableViewController {
-
+    
+    //MARK: Variables
+    var selectedCafe: String?
+    var cafe: Cafe?
+    var locations: [Location] = []
+    
+    //MARK: Objects
+    @IBOutlet weak var cafeLocationsMap: MKMapView!
+    @IBOutlet weak var cafeLocationsLabel: UILabel!
+    
+    //MARK: - View Controller Life Cycle
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        // Uncomment the following line to preserve selection between presentations
-        // self.clearsSelectionOnViewWillAppear = false
-
-        // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
-        // self.navigationItem.rightBarButtonItem = self.editButtonItem
+        
+        //Find and set cafe corresponding to selectedCafe
+        if let selectedCafe = selectedCafe {
+            if let cafe = Cafes.all[selectedCafe] {
+                self.cafe = cafe
+                print("CafeDetailTableVC: Cafe has been set: \(cafe)")
+            }
+        }
+        
+        //Find and set locations related to cafe
+        if let cafeLocations = cafe?.locations {
+            for cafeLocation in cafeLocations {
+                if let location = Locations.all[cafeLocation] {
+                    locations.append(location)
+                    print("CafeDetailTableVC: New location has been added to locations: \(location.nameShort)")
+                } else {
+                    print("CafeDetailTableVC: Could not add new location to loations.")
+                }
+            }
+        }
+        
+        //Show annotations of Cafe and center CafeMap
+        if !locations.isEmpty {
+            //TODO: Replace returnAnnotations(ofCafe) by (ofLocation)
+            let locationAnnotations = AnnotatedLocation.returnAnnotations(of: locations)
+            let region = AnnotatedLocation.centerMapAround(locationAnnotations)
+            cafeLocationsMap.addAnnotations(locationAnnotations)
+            cafeLocationsMap.setRegion(region, animated: true)
+        } else {
+            print("CafeDetailTableVC: Could not show location-annotation of \(selectedCafe ?? "unknown Cafe") on map.")
+        }
+        
+        //Show location-details of Cafe in cafeLocationsLabel
+        if !locations.isEmpty {
+//            var locationText = String()
+            let attributedText = NSMutableAttributedString()
+            
+            let attrs = [NSAttributedString.Key.font: UIFont.boldSystemFont(ofSize: 17)]
+            
+            for (index, location) in locations.enumerated() {
+                attributedText.append(NSMutableAttributedString(string: "\(location.nameLong)\n", attributes: attrs))
+                attributedText.append(NSMutableAttributedString(string: location.nameShort))
+//                locationText += "\(location.nameLong)/n"
+//                locationText += "\(location.nameShort)" //Test for address, etc.
+                if index != (locations.count - 1) {
+//                    locationText += "/n/n"
+                    attributedText.append(NSMutableAttributedString(string: "\n\n"))
+                }
+            }
+            cafeLocationsLabel.attributedText = attributedText
+        } else {
+            print("CafeDetailTableVC: Could not find and show location details.")
+            cafeLocationsLabel.text = "Helaas kunnen wij momenteel geen locatie-details vinden."
+        }
     }
-
-    // MARK: - Table view data source
-
-    override func numberOfSections(in tableView: UITableView) -> Int {
-        // #warning Incomplete implementation, return the number of sections
-        return 0
+    
+    //MARK: - Table View Delegate Methods
+    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        if indexPath.section == 0 && indexPath.row == 0 {
+            return (self.view!.bounds.height / 4)
+        } else {
+            return UITableView.automaticDimension
+        }
     }
-
-    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        // #warning Incomplete implementation, return the number of rows
-        return 0
-    }
-
-    /*
-    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "reuseIdentifier", for: indexPath)
-
-        // Configure the cell...
-
-        return cell
-    }
-    */
-
-    /*
-    // Override to support conditional editing of the table view.
-    override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
-        // Return false if you do not want the specified item to be editable.
-        return true
-    }
-    */
-
-    /*
-    // Override to support editing the table view.
-    override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
-        if editingStyle == .delete {
-            // Delete the row from the data source
-            tableView.deleteRows(at: [indexPath], with: .fade)
-        } else if editingStyle == .insert {
-            // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
-        }    
-    }
-    */
-
-    /*
-    // Override to support rearranging the table view.
-    override func tableView(_ tableView: UITableView, moveRowAt fromIndexPath: IndexPath, to: IndexPath) {
-
-    }
-    */
-
-    /*
-    // Override to support conditional rearranging of the table view.
-    override func tableView(_ tableView: UITableView, canMoveRowAt indexPath: IndexPath) -> Bool {
-        // Return false if you do not want the item to be re-orderable.
-        return true
-    }
-    */
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
-    }
-    */
-
 }

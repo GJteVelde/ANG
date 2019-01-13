@@ -17,7 +17,7 @@
 		5CBC519221E93F9D0079378B /* ANGUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CBC519121E93F9D0079378B /* ANGUITests.swift */; };
 		5CBC51A021E940BD0079378B /* Cafe.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CBC519F21E940BD0079378B /* Cafe.swift */; };
 		5CBC51A421E941810079378B /* Location.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CBC51A321E941810079378B /* Location.swift */; };
-		5CBC51A621E9423D0079378B /* CafeLocation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CBC51A521E9423D0079378B /* CafeLocation.swift */; };
+		5CBC51A621E9423D0079378B /* AnnotatedLocation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CBC51A521E9423D0079378B /* AnnotatedLocation.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -54,7 +54,7 @@
 		5CBC519321E93F9D0079378B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		5CBC519F21E940BD0079378B /* Cafe.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Cafe.swift; sourceTree = "<group>"; };
 		5CBC51A321E941810079378B /* Location.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Location.swift; sourceTree = "<group>"; };
-		5CBC51A521E9423D0079378B /* CafeLocation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CafeLocation.swift; sourceTree = "<group>"; };
+		5CBC51A521E9423D0079378B /* AnnotatedLocation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnnotatedLocation.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -138,7 +138,7 @@
 			isa = PBXGroup;
 			children = (
 				5CBC519F21E940BD0079378B /* Cafe.swift */,
-				5CBC51A521E9423D0079378B /* CafeLocation.swift */,
+				5CBC51A521E9423D0079378B /* AnnotatedLocation.swift */,
 				5CBC51A321E941810079378B /* Location.swift */,
 			);
 			path = Model;
@@ -289,7 +289,7 @@
 				5CBC51A421E941810079378B /* Location.swift in Sources */,
 				5CA0E89221EA54D00044B72E /* CafeDetailTableViewController.swift in Sources */,
 				5CBC51A021E940BD0079378B /* Cafe.swift in Sources */,
-				5CBC51A621E9423D0079378B /* CafeLocation.swift in Sources */,
+				5CBC51A621E9423D0079378B /* AnnotatedLocation.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
