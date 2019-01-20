@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		5C74361C21F5162500AFEF53 /* ActivitiesTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C74361B21F5162500AFEF53 /* ActivitiesTableViewController.swift */; };
 		5CA0E89221EA54D00044B72E /* CafeDetailTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CA0E89121EA54D00044B72E /* CafeDetailTableViewController.swift */; };
 		5CBC517221E93F9B0079378B /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CBC517121E93F9B0079378B /* AppDelegate.swift */; };
 		5CBC517421E93F9B0079378B /* CafeMapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CBC517321E93F9B0079378B /* CafeMapViewController.swift */; };
@@ -18,6 +19,7 @@
 		5CBC51A021E940BD0079378B /* Cafe.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CBC519F21E940BD0079378B /* Cafe.swift */; };
 		5CBC51A421E941810079378B /* Location.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CBC51A321E941810079378B /* Location.swift */; };
 		5CBC51A621E9423D0079378B /* AnnotatedLocation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CBC51A521E9423D0079378B /* AnnotatedLocation.swift */; };
+		5CD8B79621EE5C980095B21D /* Activity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CD8B79521EE5C980095B21D /* Activity.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -38,6 +40,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		5C74361B21F5162500AFEF53 /* ActivitiesTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivitiesTableViewController.swift; sourceTree = "<group>"; };
 		5CA0E89121EA54D00044B72E /* CafeDetailTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CafeDetailTableViewController.swift; sourceTree = "<group>"; };
 		5CBC516E21E93F9B0079378B /* ANG.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ANG.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		5CBC517121E93F9B0079378B /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -55,6 +58,7 @@
 		5CBC519F21E940BD0079378B /* Cafe.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Cafe.swift; sourceTree = "<group>"; };
 		5CBC51A321E941810079378B /* Location.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Location.swift; sourceTree = "<group>"; };
 		5CBC51A521E9423D0079378B /* AnnotatedLocation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnnotatedLocation.swift; sourceTree = "<group>"; };
+		5CD8B79521EE5C980095B21D /* Activity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Activity.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -140,6 +144,7 @@
 				5CBC519F21E940BD0079378B /* Cafe.swift */,
 				5CBC51A521E9423D0079378B /* AnnotatedLocation.swift */,
 				5CBC51A321E941810079378B /* Location.swift */,
+				5CD8B79521EE5C980095B21D /* Activity.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -147,6 +152,7 @@
 		5CBC51A221E940D10079378B /* View Controller */ = {
 			isa = PBXGroup;
 			children = (
+				5C74361B21F5162500AFEF53 /* ActivitiesTableViewController.swift */,
 				5CBC517321E93F9B0079378B /* CafeMapViewController.swift */,
 				5CA0E89121EA54D00044B72E /* CafeDetailTableViewController.swift */,
 			);
@@ -286,6 +292,8 @@
 			files = (
 				5CBC517421E93F9B0079378B /* CafeMapViewController.swift in Sources */,
 				5CBC517221E93F9B0079378B /* AppDelegate.swift in Sources */,
+				5C74361C21F5162500AFEF53 /* ActivitiesTableViewController.swift in Sources */,
+				5CD8B79621EE5C980095B21D /* Activity.swift in Sources */,
 				5CBC51A421E941810079378B /* Location.swift in Sources */,
 				5CA0E89221EA54D00044B72E /* CafeDetailTableViewController.swift in Sources */,
 				5CBC51A021E940BD0079378B /* Cafe.swift in Sources */,

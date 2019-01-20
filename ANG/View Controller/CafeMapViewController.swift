@@ -41,6 +41,17 @@ class CafeMapViewController: UIViewController {
             Location(nameShort: "Wildervanck", nameLong: "Woonzorgcentrum A.G. Wildervanck", latitude: 53.073946, longitude: 6.858611200000041)
         ]
         
+        _ = [
+            Activity(title: "Activity 1", location: "Bernlef", cafe: "Groningen"),
+            Activity(title: "Activity 2", location: "Bernlef", cafe: "Groningen"),
+            Activity(title: "Activity 3", location: "Bernlef", cafe: "Groningen"),
+            Activity(title: "Activity 4", location: "Breehorn", cafe: "Veendam"),
+            Activity(title: "Activity 5", location: "Wildervanck", cafe: "Veendam"),
+            Activity(title: "Activity 6", location: "Breehorn", cafe: "Veendam"),
+            Activity(title: "Activity 7", location: "Wildervanck", cafe: "Veendam"),
+            Activity(title: "Activity 8", location: "Breehorn", cafe: "Veendam")
+        ]
+        
         //Center of mapForCafes
         //Create array from Cafes.all dictionary
         let cafes: [Cafe] = Cafes.all.map { $0.value }

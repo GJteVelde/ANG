@@ -15,10 +15,12 @@ class CafeDetailTableViewController: UITableViewController {
     var selectedCafe: String?
     var cafe: Cafe?
     var locations: [Location] = []
+    var activities: [Activity] = []
     
     //MARK: Objects
     @IBOutlet weak var cafeLocationsMap: MKMapView!
     @IBOutlet weak var cafeLocationsLabel: UILabel!
+    @IBOutlet var activityLabel: UILabel!
     
     //MARK: - View Controller Life Cycle
     override func viewDidLoad() {
@@ -57,7 +59,6 @@ class CafeDetailTableViewController: UITableViewController {
         
         //Show location-details of Cafe in cafeLocationsLabel
         if !locations.isEmpty {
-//            var locationText = String()
             let attributedText = NSMutableAttributedString()
             
             let attrs = [NSAttributedString.Key.font: UIFont.boldSystemFont(ofSize: 17)]
@@ -65,10 +66,7 @@ class CafeDetailTableViewController: UITableViewController {
             for (index, location) in locations.enumerated() {
                 attributedText.append(NSMutableAttributedString(string: "\(location.nameLong)\n", attributes: attrs))
                 attributedText.append(NSMutableAttributedString(string: location.nameShort))
-//                locationText += "\(location.nameLong)/n"
-//                locationText += "\(location.nameShort)" //Test for address, etc.
                 if index != (locations.count - 1) {
-//                    locationText += "/n/n"
                     attributedText.append(NSMutableAttributedString(string: "\n\n"))
                 }
             }
@@ -76,6 +74,39 @@ class CafeDetailTableViewController: UITableViewController {
         } else {
             print("CafeDetailTableVC: Could not find and show location details.")
             cafeLocationsLabel.text = "Helaas kunnen wij momenteel geen locatie-details vinden."
+        }
+        
+        //Find activities of selected Cafe
+        if cafe != nil {
+            activities = Activities.ofCafe(cafe!.nameShort)
+        }
+        
+        //Count and return amount of activities in activityLabel
+        var activityLabelText = ""
+        
+        switch activities.count {
+        case 0:
+            activityLabelText = "Er zijn geen activiteiten gevonden."
+        case 1:
+            activityLabelText = "Er is 1 activiteit gevonden."
+        default:
+            activityLabelText = "Er zijn \(activities.count) activiteiten gevonden."
+        }
+        
+        activityLabel.text = activityLabelText
+    }
+    
+    
+    //Show DisclosureIndicator under activities if activities is not empty.
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        let cell: UITableViewCell! = tableView.cellForRow(at: IndexPath(row: 0, section: 1))
+        
+        if activities.isEmpty {
+            cell.accessoryType = .none
+        } else {
+            cell.accessoryType = .disclosureIndicator
         }
     }
     
@@ -87,4 +118,22 @@ class CafeDetailTableViewController: UITableViewController {
             return UITableView.automaticDimension
         }
     }
+    
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        guard indexPath == IndexPath(row: 0, section: 1) && !activities.isEmpty else { return }
+        
+        if let destination = storyboard?.instantiateViewController(withIdentifier: "ActivitiesViewController") as? ActivitiesTableViewController {
+            destination.activities = activities
+            destination.title = cafe?.nameLong
+            navigationController?.pushViewController(destination, animated: true)
+        }
+    }
+    
+    //Remove header of location-section
+    override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        return section == 0 ? CGFloat.leastNonzeroMagnitude : 32
+    }
+    
+    //MARK: - Segues
+    
 }
