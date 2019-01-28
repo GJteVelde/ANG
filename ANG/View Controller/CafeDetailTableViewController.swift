@@ -41,7 +41,7 @@ class CafeDetailTableViewController: UITableViewController {
                     locations.append(location)
                     print("CafeDetailTableVC: New location has been added to locations: \(location.nameShort)")
                 } else {
-                    print("CafeDetailTableVC: Could not add new location to loations.")
+                    print("CafeDetailTableVC: Could not add new location to locations.")
                 }
             }
         }
@@ -122,7 +122,7 @@ class CafeDetailTableViewController: UITableViewController {
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         guard indexPath == IndexPath(row: 0, section: 1) && !activities.isEmpty else { return }
         
-        if let destination = storyboard?.instantiateViewController(withIdentifier: "ActivitiesViewController") as? ActivitiesTableViewController {
+        if let destination = storyboard?.instantiateViewController(withIdentifier: "ActivitiesOfCafeViewController") as? ActivitiesOfCafeTableViewController {
             destination.activities = activities
             destination.title = cafe?.nameLong
             navigationController?.pushViewController(destination, animated: true)

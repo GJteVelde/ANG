@@ -14,7 +14,6 @@ class CafeMapViewController: UIViewController {
     //MARK: - Objects
     @IBOutlet weak var cafesMap: MKMapView!
     
-    
     //MARK: - View Controller Life Cycle
     override func viewDidLoad() {
         super.viewDidLoad()
