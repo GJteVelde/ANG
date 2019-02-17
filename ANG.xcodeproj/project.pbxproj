@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		5C93BE7021FFAFA80040F8E7 /* ActivitiesTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C93BE6F21FFAFA80040F8E7 /* ActivitiesTableViewController.swift */; };
 		5CA0E89221EA54D00044B72E /* CafeDetailTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CA0E89121EA54D00044B72E /* CafeDetailTableViewController.swift */; };
+		5CB2A6512219BC560070EAE5 /* ActivityDetailTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CB2A6502219BC560070EAE5 /* ActivityDetailTableViewController.swift */; };
+		5CB2A6532219CCEC0070EAE5 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CB2A6522219CCEC0070EAE5 /* User.swift */; };
 		5CBC517221E93F9B0079378B /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CBC517121E93F9B0079378B /* AppDelegate.swift */; };
 		5CBC517421E93F9B0079378B /* CafeMapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CBC517321E93F9B0079378B /* CafeMapViewController.swift */; };
 		5CBC517721E93F9B0079378B /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5CBC517521E93F9B0079378B /* Main.storyboard */; };
@@ -42,6 +44,8 @@
 /* Begin PBXFileReference section */
 		5C93BE6F21FFAFA80040F8E7 /* ActivitiesTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivitiesTableViewController.swift; sourceTree = "<group>"; };
 		5CA0E89121EA54D00044B72E /* CafeDetailTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CafeDetailTableViewController.swift; sourceTree = "<group>"; };
+		5CB2A6502219BC560070EAE5 /* ActivityDetailTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityDetailTableViewController.swift; sourceTree = "<group>"; };
+		5CB2A6522219CCEC0070EAE5 /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		5CBC516E21E93F9B0079378B /* ANG.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ANG.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		5CBC517121E93F9B0079378B /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		5CBC517321E93F9B0079378B /* CafeMapViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CafeMapViewController.swift; sourceTree = "<group>"; };
@@ -142,6 +146,7 @@
 			isa = PBXGroup;
 			children = (
 				5CBC519F21E940BD0079378B /* Cafe.swift */,
+				5CB2A6522219CCEC0070EAE5 /* User.swift */,
 				5CBC51A521E9423D0079378B /* AnnotatedLocation.swift */,
 				5CBC51A321E941810079378B /* Location.swift */,
 				5CD8B79521EE5C980095B21D /* Activity.swift */,
@@ -155,6 +160,7 @@
 				5CBC517321E93F9B0079378B /* CafeMapViewController.swift */,
 				5CA0E89121EA54D00044B72E /* CafeDetailTableViewController.swift */,
 				5C93BE6F21FFAFA80040F8E7 /* ActivitiesTableViewController.swift */,
+				5CB2A6502219BC560070EAE5 /* ActivityDetailTableViewController.swift */,
 			);
 			path = "View Controller";
 			sourceTree = "<group>";
@@ -291,12 +297,14 @@
 			buildActionMask = 2147483647;
 			files = (
 				5CBC517421E93F9B0079378B /* CafeMapViewController.swift in Sources */,
+				5CB2A6512219BC560070EAE5 /* ActivityDetailTableViewController.swift in Sources */,
 				5CBC517221E93F9B0079378B /* AppDelegate.swift in Sources */,
 				5CD8B79621EE5C980095B21D /* Activity.swift in Sources */,
 				5CBC51A421E941810079378B /* Location.swift in Sources */,
 				5CA0E89221EA54D00044B72E /* CafeDetailTableViewController.swift in Sources */,
 				5C93BE7021FFAFA80040F8E7 /* ActivitiesTableViewController.swift in Sources */,
 				5CBC51A021E940BD0079378B /* Cafe.swift in Sources */,
+				5CB2A6532219CCEC0070EAE5 /* User.swift in Sources */,
 				5CBC51A621E9423D0079378B /* AnnotatedLocation.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

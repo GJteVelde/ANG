@@ -20,9 +20,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         //Add ActivitiesTableViewController programmatically to tab bar
         if let tabBarController = window?.rootViewController as? UITabBarController {
             let storyBoard = UIStoryboard(name: "Main", bundle: nil)
-            let viewController = storyBoard.instantiateViewController(withIdentifier: "ActivitiesTableViewController")
-            viewController.tabBarItem = UITabBarItem(title: "Activiteiten", image: nil, selectedImage: nil)
-            tabBarController.viewControllers?.append(viewController)
+            let navigationActivitiesViewController = storyBoard.instantiateViewController(withIdentifier: "NavigationActivitiesIdentifier") as! UINavigationController
+            navigationActivitiesViewController.tabBarItem = UITabBarItem(title: "Activiteiten", image: nil, tag: 1)
+            tabBarController.viewControllers?.append(navigationActivitiesViewController)
         }
         
         return true

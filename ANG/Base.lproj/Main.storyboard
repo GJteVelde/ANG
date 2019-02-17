@@ -160,7 +160,7 @@
         <!--Activities Table View Controller-->
         <scene sceneID="QvA-Gf-JOl">
             <objects>
-                <tableViewController storyboardIdentifier="ActivitiesTableViewController" id="aF5-dp-ZHn" customClass="ActivitiesTableViewController" customModule="ANG" customModuleProvider="target" sceneMemberID="viewController">
+                <tableViewController storyboardIdentifier="ActivitiesIdentifier" id="aF5-dp-ZHn" customClass="ActivitiesTableViewController" customModule="ANG" customModuleProvider="target" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" id="dk1-NO-cGe">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -189,6 +189,9 @@
                                         </label>
                                     </subviews>
                                 </tableViewCellContentView>
+                                <connections>
+                                    <segue destination="hv8-um-x0J" kind="show" identifier="ActivityDetailSegue" id="40t-g2-8Ym"/>
+                                </connections>
                             </tableViewCell>
                         </prototypes>
                         <connections>
@@ -201,6 +204,55 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="ZFt-9k-lg6" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="1993" y="903"/>
+        </scene>
+        <!--Activiteit-->
+        <scene sceneID="2d5-3F-k4C">
+            <objects>
+                <tableViewController title="Activiteit" id="hv8-um-x0J" customClass="ActivityDetailTableViewController" customModule="ANG" customModuleProvider="target" sceneMemberID="viewController">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="static" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" id="0US-3M-2Y0">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <sections>
+                            <tableViewSection id="kKl-Mr-DUg">
+                                <cells>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" id="JK1-Ly-BaZ">
+                                        <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="JK1-Ly-BaZ" id="Egm-Z9-KqQ">
+                                            <rect key="frame" x="0.0" y="0.0" width="375" height="43.5"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="odw-Sk-ZAa">
+                                                    <rect key="frame" x="16" y="11" width="343" height="22"/>
+                                                    <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
+                                                    <nil key="textColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstAttribute="trailingMargin" secondItem="odw-Sk-ZAa" secondAttribute="trailing" id="3CP-EK-FyA"/>
+                                                <constraint firstItem="odw-Sk-ZAa" firstAttribute="leading" secondItem="Egm-Z9-KqQ" secondAttribute="leadingMargin" id="HLQ-Kj-o79"/>
+                                                <constraint firstItem="odw-Sk-ZAa" firstAttribute="top" secondItem="Egm-Z9-KqQ" secondAttribute="topMargin" id="Q9l-bH-ktk"/>
+                                                <constraint firstAttribute="bottomMargin" secondItem="odw-Sk-ZAa" secondAttribute="bottom" id="oTB-Xv-byL"/>
+                                            </constraints>
+                                        </tableViewCellContentView>
+                                    </tableViewCell>
+                                </cells>
+                            </tableViewSection>
+                        </sections>
+                        <connections>
+                            <outlet property="dataSource" destination="hv8-um-x0J" id="py0-Xv-6cH"/>
+                            <outlet property="delegate" destination="hv8-um-x0J" id="EH2-bC-hYc"/>
+                        </connections>
+                    </tableView>
+                    <connections>
+                        <outlet property="titleLabel" destination="odw-Sk-ZAa" id="DAP-z4-wj7"/>
+                    </connections>
+                </tableViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="7BD-2d-vvQ" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2761" y="903"/>
         </scene>
         <!--Tab Bar Controller-->
         <scene sceneID="av6-Vx-HHV">
@@ -218,12 +270,12 @@
                 </tabBarController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="gtR-LO-GDv" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="481" y="134"/>
+            <point key="canvasLocation" x="447" y="529"/>
         </scene>
         <!--Activiteiten-->
         <scene sceneID="rnF-1I-ZRI">
             <objects>
-                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="8PO-HT-rhJ" sceneMemberID="viewController">
+                <navigationController storyboardIdentifier="NavigationActivitiesIdentifier" automaticallyAdjustsScrollViewInsets="NO" id="8PO-HT-rhJ" sceneMemberID="viewController">
                     <tabBarItem key="tabBarItem" title="Activiteiten" id="pr7-Wd-puI"/>
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="IWV-ko-nPx">

@@ -29,7 +29,6 @@ class CafeDetailTableViewController: UITableViewController {
         if let selectedCafe = selectedCafe {
             if let cafe = Cafes.all[selectedCafe] {
                 self.cafe = cafe
-                print("CafeDetailTableVC: Cafe has been set: \(cafe)")
             }
         }
         
@@ -38,7 +37,6 @@ class CafeDetailTableViewController: UITableViewController {
             for cafeLocation in cafeLocations {
                 if let location = Locations.all[cafeLocation] {
                     locations.append(location)
-                    print("CafeDetailTableVC: New location has been added to locations: \(location.nameShort)")
                 } else {
                     print("CafeDetailTableVC: Could not add new location to locations.")
                 }
@@ -47,7 +45,6 @@ class CafeDetailTableViewController: UITableViewController {
         
         //Show annotations of Cafe and center CafeMap
         if !locations.isEmpty {
-            //TODO: Replace returnAnnotations(ofCafe) by (ofLocation)
             let locationAnnotations = AnnotatedLocation.returnAnnotations(of: locations)
             let region = AnnotatedLocation.centerMapAround(locationAnnotations)
             cafeLocationsMap.addAnnotations(locationAnnotations)
@@ -96,7 +93,7 @@ class CafeDetailTableViewController: UITableViewController {
     }
     
     
-    //Show DisclosureIndicator under activities if activities is not empty.
+    //Show DisclosureIndicator under activities and allow cell selection if activities is not empty.
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
@@ -104,6 +101,7 @@ class CafeDetailTableViewController: UITableViewController {
         
         if activities.isEmpty {
             cell.accessoryType = .none
+            cell.isUserInteractionEnabled = false
         } else {
             cell.accessoryType = .disclosureIndicator
         }
@@ -121,7 +119,7 @@ class CafeDetailTableViewController: UITableViewController {
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         guard indexPath == IndexPath(row: 0, section: 1) && !activities.isEmpty else { return }
         
-        if let destination = storyboard?.instantiateViewController(withIdentifier: "ActivitiesTableViewController") as? ActivitiesTableViewController {
+        if let destination = storyboard?.instantiateViewController(withIdentifier: "ActivitiesIdentifier") as? ActivitiesTableViewController {
             destination.selectedCafe = cafe
             navigationController?.pushViewController(destination, animated: true)
         }
