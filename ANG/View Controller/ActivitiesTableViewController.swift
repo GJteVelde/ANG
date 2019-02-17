@@ -10,11 +10,19 @@ import UIKit
 
 class ActivitiesTableViewController: UITableViewController {
 
+    var selectedCafe: Cafe!
     var activities: [Activity]!
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        activities = Activities.all
+        
+        if let selectedCafe = selectedCafe {
+            activities = Activities.ofCafe(selectedCafe.nameShort)
+            title = selectedCafe.nameLong
+        } else {
+            activities = Activities.all
+            title = "Activiteiten"
+        }
     }
 
     // MARK: - Table view data source

@@ -138,50 +138,6 @@
             </objects>
             <point key="canvasLocation" x="2760.8000000000002" y="133.5832083958021"/>
         </scene>
-        <!--Activities Of Cafe Table View Controller-->
-        <scene sceneID="jQe-tw-05Y">
-            <objects>
-                <tableViewController storyboardIdentifier="ActivitiesOfCafeViewController" id="6il-PN-bCg" customClass="ActivitiesOfCafeTableViewController" customModule="ANG" customModuleProvider="target" sceneMemberID="viewController">
-                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" id="cGm-ze-MBv">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                        <prototypes>
-                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="ActivityCell" textLabel="ik3-je-GLs" detailTextLabel="SrE-1n-ehg" style="IBUITableViewCellStyleSubtitle" id="oNq-eI-wfd">
-                                <rect key="frame" x="0.0" y="28" width="375" height="44"/>
-                                <autoresizingMask key="autoresizingMask"/>
-                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="oNq-eI-wfd" id="vnU-0G-khR">
-                                    <rect key="frame" x="0.0" y="0.0" width="375" height="43.5"/>
-                                    <autoresizingMask key="autoresizingMask"/>
-                                    <subviews>
-                                        <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" insetsLayoutMarginsFromSafeArea="NO" text="Title" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="ik3-je-GLs">
-                                            <rect key="frame" x="16" y="5" width="33.5" height="20.5"/>
-                                            <autoresizingMask key="autoresizingMask"/>
-                                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                            <nil key="textColor"/>
-                                            <nil key="highlightedColor"/>
-                                        </label>
-                                        <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" insetsLayoutMarginsFromSafeArea="NO" text="Detail" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="SrE-1n-ehg">
-                                            <rect key="frame" x="16" y="25.5" width="33" height="14.5"/>
-                                            <autoresizingMask key="autoresizingMask"/>
-                                            <fontDescription key="fontDescription" type="system" pointSize="12"/>
-                                            <nil key="textColor"/>
-                                            <nil key="highlightedColor"/>
-                                        </label>
-                                    </subviews>
-                                </tableViewCellContentView>
-                            </tableViewCell>
-                        </prototypes>
-                        <connections>
-                            <outlet property="dataSource" destination="6il-PN-bCg" id="fKF-wk-bRV"/>
-                            <outlet property="delegate" destination="6il-PN-bCg" id="Ttd-bh-FJV"/>
-                        </connections>
-                    </tableView>
-                </tableViewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="Iez-vi-AVe" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="3532" y="134"/>
-        </scene>
         <!--Cafés-->
         <scene sceneID="Oao-hM-fMd">
             <objects>
@@ -204,7 +160,7 @@
         <!--Activities Table View Controller-->
         <scene sceneID="QvA-Gf-JOl">
             <objects>
-                <tableViewController id="aF5-dp-ZHn" customClass="ActivitiesTableViewController" customModule="ANG" customModuleProvider="target" sceneMemberID="viewController">
+                <tableViewController storyboardIdentifier="ActivitiesTableViewController" id="aF5-dp-ZHn" customClass="ActivitiesTableViewController" customModule="ANG" customModuleProvider="target" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" id="dk1-NO-cGe">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -258,7 +214,6 @@
                     </tabBar>
                     <connections>
                         <segue destination="W02-1E-AVR" kind="relationship" relationship="viewControllers" id="dV6-hr-cj8"/>
-                        <segue destination="8PO-HT-rhJ" kind="relationship" relationship="viewControllers" id="buG-Sa-4qC"/>
                     </connections>
                 </tabBarController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="gtR-LO-GDv" userLabel="First Responder" sceneMemberID="firstResponder"/>

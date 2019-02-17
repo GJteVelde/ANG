@@ -11,13 +11,12 @@ import MapKit
 
 class CafeDetailTableViewController: UITableViewController {
     
-    //MARK: Variables
+    //MARK: Properties
     var selectedCafe: String?
     var cafe: Cafe?
     var locations: [Location] = []
     var activities: [Activity] = []
     
-    //MARK: Objects
     @IBOutlet weak var cafeLocationsMap: MKMapView!
     @IBOutlet weak var cafeLocationsLabel: UILabel!
     @IBOutlet var activityLabel: UILabel!
@@ -122,9 +121,8 @@ class CafeDetailTableViewController: UITableViewController {
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         guard indexPath == IndexPath(row: 0, section: 1) && !activities.isEmpty else { return }
         
-        if let destination = storyboard?.instantiateViewController(withIdentifier: "ActivitiesOfCafeViewController") as? ActivitiesOfCafeTableViewController {
-            destination.activities = activities
-            destination.title = cafe?.nameLong
+        if let destination = storyboard?.instantiateViewController(withIdentifier: "ActivitiesTableViewController") as? ActivitiesTableViewController {
+            destination.selectedCafe = cafe
             navigationController?.pushViewController(destination, animated: true)
         }
     }

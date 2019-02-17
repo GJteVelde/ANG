@@ -16,6 +16,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
+        
+        //Add ActivitiesTableViewController programmatically to tab bar
+        if let tabBarController = window?.rootViewController as? UITabBarController {
+            let storyBoard = UIStoryboard(name: "Main", bundle: nil)
+            let viewController = storyBoard.instantiateViewController(withIdentifier: "ActivitiesTableViewController")
+            viewController.tabBarItem = UITabBarItem(title: "Activiteiten", image: nil, selectedImage: nil)
+            tabBarController.viewControllers?.append(viewController)
+        }
+        
         return true
     }
 
