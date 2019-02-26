@@ -10,26 +10,31 @@ import Foundation
 import MapKit
 
 class AnnotatedLocation: NSObject, MKAnnotation {
+    //Combines details from the Cafe and Location classes. 
     var coordinate: CLLocationCoordinate2D
     var title: String?
     var subtitle: String?
+    var isFavorite: Bool?
+    var cafeShortName: String?
     
-    init(coordinate: CLLocationCoordinate2D, title: String?, subtitle: String?) {
+    init(coordinate: CLLocationCoordinate2D, title: String?, subtitle: String?, isFavorite: Bool?, cafeShortName: String?) {
         self.coordinate = coordinate
         self.title = title
         self.subtitle = subtitle
+        self.isFavorite = isFavorite
+        self.cafeShortName = cafeShortName
     }
 }
 
 extension AnnotatedLocation {
     //Return locations of cafe(s) as MKAnnotations to show on the map
-    static func returnAnnotations(of cafes: [Cafe]) -> [MKAnnotation] {
-        var annotations = [MKAnnotation]()
+    static func returnAnnotations(of cafes: [Cafe]) -> [AnnotatedLocation] {
+        var annotations = [AnnotatedLocation]()
         
         for cafe in cafes {
             for cafeLocation in cafe.locations {
                 if let location = Locations.all[cafeLocation] {
-                    annotations.append(AnnotatedLocation(coordinate: location.coordinate, title: cafe.nameLong, subtitle: location.nameLong))
+                    annotations.append(AnnotatedLocation(coordinate: location.coordinate, title: cafe.nameLong, subtitle: location.nameLong, isFavorite: cafe.isFavorite, cafeShortName: cafe.nameShort))
                 } else {
                     print("CafeLocation: Could not find location \(cafeLocation) of \(cafe.nameLong)")
                 }
@@ -44,7 +49,7 @@ extension AnnotatedLocation {
         var annotations = [MKAnnotation]()
         
         for location in locations {
-            annotations.append(AnnotatedLocation(coordinate: location.coordinate, title: location.nameLong, subtitle: nil))
+            annotations.append(AnnotatedLocation(coordinate: location.coordinate, title: location.nameLong, subtitle: nil, isFavorite: nil, cafeShortName: nil))
         }
         
         return annotations

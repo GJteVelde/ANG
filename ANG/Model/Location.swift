@@ -24,6 +24,7 @@ struct Location {
         self.nameLong = nameLong
         self.latitude = latitude
         self.longitude = longitude
+        
         Locations.all[nameShort] = self
     }
 }

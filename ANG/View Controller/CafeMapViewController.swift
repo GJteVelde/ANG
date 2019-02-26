@@ -13,6 +13,7 @@ class CafeMapViewController: UIViewController {
 
     //MARK: - Properties
     @IBOutlet weak var cafesMap: MKMapView!
+    var annotations = [AnnotatedLocation]()
     
     //MARK: - View Controller Life Cycle
     override func viewDidLoad() {
@@ -27,7 +28,7 @@ class CafeMapViewController: UIViewController {
         //Center of mapForCafes
         //Create array from Cafes.all dictionary
         let cafes: [Cafe] = Cafes.all.map { $0.value }
-        let annotations = AnnotatedLocation.returnAnnotations(of: cafes)
+        annotations = AnnotatedLocation.returnAnnotations(of: cafes)
         let region = AnnotatedLocation.centerMapAround(annotations)
         cafesMap.setRegion(region, animated: true)
         
@@ -64,7 +65,7 @@ class CafeMapViewController: UIViewController {
 }
 
 extension CafeMapViewController: MKMapViewDelegate {
-    //Show MkAnnotationViews on map and create segue to CafeDetailViewController.
+    //Show MkAnnotationViews on map, allow user to mark cafe as favorite, and create segue to CafeDetailViewController.
     func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
         guard let annotation = annotation as? AnnotatedLocation else { return nil }
         
@@ -78,15 +79,60 @@ extension CafeMapViewController: MKMapViewDelegate {
             view = MKMarkerAnnotationView(annotation: annotation, reuseIdentifier: identifier)
             view.canShowCallout = true
             view.rightCalloutAccessoryView = UIButton(type: .detailDisclosure)
+            
+            let favoriteButton = UIButton(type: .custom)
+            favoriteButton.frame.size = view.rightCalloutAccessoryView!.frame.size
+            favoriteButton.layer.cornerRadius = view.rightCalloutAccessoryView!.frame.size.height / 2
+            favoriteButton.tintColor = UIColor.white
+            favoriteButton.titleLabel?.font = UIFont.boldSystemFont(ofSize: 30)
+            favoriteButton.contentEdgeInsets = UIEdgeInsets(top: -10, left: -10, bottom: -6, right: -10)
+            view.leftCalloutAccessoryView = favoriteButton
+            
         }
+        
+        if let isFavorite = annotation.isFavorite, let favoriteButton = view.leftCalloutAccessoryView as? UIButton {
+            if isFavorite {
+                view.markerTintColor = UIColor.green
+                favoriteButton.backgroundColor = UIColor.red
+                favoriteButton.setTitle("-", for: .normal)
+            } else {
+                view.markerTintColor = UIColor.red
+                favoriteButton.backgroundColor = UIColor.green
+                favoriteButton.setTitle("+", for: .normal)
+            }
+        } else {
+            view.markerTintColor = UIColor.red
+        }
+        
         return view
     }
     
     func mapView(_ mapView: MKMapView, annotationView view: MKAnnotationView, calloutAccessoryControlTapped control: UIControl) {
-        performSegue(withIdentifier: "CafeDetailSegue", sender: view)
+        if view.rightCalloutAccessoryView == control {
+            performSegue(withIdentifier: "CafeDetailSegue", sender: view)
+        } else {
+            let location = view.annotation as! AnnotatedLocation
+            
+            if let index = annotations.index(of: location) {
+                let selectedAnnotation = annotations[index]
+                
+                mapView.removeAnnotation(selectedAnnotation)
+                selectedAnnotation.isFavorite = !selectedAnnotation.isFavorite!
+                Cafes.all[selectedAnnotation.cafeShortName!]?.isFavorite = selectedAnnotation.isFavorite!
+                mapView.addAnnotation(selectedAnnotation)
+                
+                //Check (and change) other locations of same cafe
+                for i in annotations {
+                    if i.cafeShortName == selectedAnnotation.cafeShortName {
+                        mapView.removeAnnotation(i)
+                        i.isFavorite = selectedAnnotation.isFavorite
+                        mapView.addAnnotation(i)
+                    }
+                }
+            }
+        }
     }
     
-    //TODO: Segue to CafeDetailViewController
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "CafeDetailSegue" {
             let destinationVC = segue.destination as! CafeDetailTableViewController
@@ -100,13 +146,13 @@ extension CafeMapViewController: MKMapViewDelegate {
 extension CafeMapViewController {
     func fillMapWithExampleData() {
         _ = [
-            Cafe(nameShort: "Groningen", locations: ["Bernlef"]),
-            Cafe(nameShort: "Haren", locations: ["De Dilgt"]),
-            Cafe(nameShort: "Bedum", locations: ["Alegunda Ilberi"]),
-            Cafe(nameShort: "Hoogezand-Sappemeer", locations: ["De Burcht"]),
-            Cafe(nameShort: "Oldambt", locations: ["De Blanckenborg"]),
-            Cafe(nameShort: "Westerwolde-Kanaalstreek", locations: ["Maarsheerd"]),
-            Cafe(nameShort: "Veendam", locations: ["Breehorn", "Wildervanck"])
+            Cafe(nameShort: "Groningen", locations: ["Bernlef"], isFavorite: true),
+            Cafe(nameShort: "Haren", locations: ["De Dilgt"], isFavorite: false),
+            Cafe(nameShort: "Bedum", locations: ["Alegunda Ilberi"], isFavorite: false),
+            Cafe(nameShort: "Hoogezand-Sappemeer", locations: ["De Burcht"], isFavorite: false),
+            Cafe(nameShort: "Oldambt", locations: ["De Blanckenborg"], isFavorite: false),
+            Cafe(nameShort: "Westerwolde-Kanaalstreek", locations: ["Maarsheerd"], isFavorite: false),
+            Cafe(nameShort: "Veendam", locations: ["Breehorn", "Wildervanck"], isFavorite: true)
         ]
         
         _ = [

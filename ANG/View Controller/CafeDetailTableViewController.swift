@@ -9,7 +9,7 @@
 import UIKit
 import MapKit
 
-class CafeDetailTableViewController: UITableViewController {
+class CafeDetailTableViewController: UITableViewController, MKMapViewDelegate {
     
     //MARK: Properties
     var selectedCafe: String?
@@ -92,7 +92,6 @@ class CafeDetailTableViewController: UITableViewController {
         activityLabel.text = activityLabelText
     }
     
-    
     //Show DisclosureIndicator under activities and allow cell selection if activities is not empty.
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
@@ -128,6 +127,34 @@ class CafeDetailTableViewController: UITableViewController {
     //Remove header of location-section
     override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         return section == 0 ? CGFloat.leastNonzeroMagnitude : 32
+    }
+    
+    //Change appearence of annotations according to Cafe.isFavorite
+    func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
+        let identifier = "location"
+        
+        if annotation is AnnotatedLocation {
+            var annotationView = mapView.dequeueReusableAnnotationView(withIdentifier: identifier) as? MKMarkerAnnotationView
+            
+            if annotationView == nil {
+                annotationView = MKMarkerAnnotationView(annotation: annotation, reuseIdentifier: identifier)
+            } else {
+                annotationView!.annotation = annotation
+            }
+            
+            if let cafe = cafe {
+                if cafe.isFavorite {
+                    annotationView!.markerTintColor = UIColor.green
+                } else {
+                    annotationView!.markerTintColor = UIColor.red
+                }
+            }
+            return annotationView
+        } else {
+            print("viewFor: annotation is not AnnotatedLocation.")
+        }
+        
+        return nil
     }
     
     //MARK: - Segues

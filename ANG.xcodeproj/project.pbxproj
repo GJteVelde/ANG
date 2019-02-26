@@ -146,10 +146,10 @@
 			isa = PBXGroup;
 			children = (
 				5CBC519F21E940BD0079378B /* Cafe.swift */,
-				5CB2A6522219CCEC0070EAE5 /* User.swift */,
 				5CBC51A521E9423D0079378B /* AnnotatedLocation.swift */,
 				5CBC51A321E941810079378B /* Location.swift */,
 				5CD8B79521EE5C980095B21D /* Activity.swift */,
+				5CB2A6522219CCEC0070EAE5 /* User.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";

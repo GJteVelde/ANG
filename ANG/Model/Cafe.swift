@@ -11,14 +11,17 @@ import Foundation
 struct Cafe {
     var nameShort: String
     var locations: [String]
+    var isFavorite: Bool
     
     var nameLong: String {
         return "Alzheimer Café \(nameShort)"
     }
     
-    init(nameShort: String, locations: [String]) {
+    init(nameShort: String, locations: [String], isFavorite: Bool) {
         self.nameShort = nameShort
         self.locations = locations
+        self.isFavorite = isFavorite
+        
         Cafes.all[nameShort] = self
     }
 }
