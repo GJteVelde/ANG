@@ -7,6 +7,11 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		5C39158E2285A35700A87E61 /* Region.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C39158D2285A35700A87E61 /* Region.swift */; };
+		5C3915922285B8A500A87E61 /* CloudKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5C3915912285B8A500A87E61 /* CloudKit.framework */; };
+		5C3915942285BCAF00A87E61 /* CloudKitService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C3915932285BCAF00A87E61 /* CloudKitService.swift */; };
+		5C3915962285C92500A87E61 /* SettingsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C3915952285C92500A87E61 /* SettingsTableViewController.swift */; };
+		5C3915982285D26500A87E61 /* SelectRegionsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C3915972285D26500A87E61 /* SelectRegionsTableViewController.swift */; };
 		5C93BE7021FFAFA80040F8E7 /* ActivitiesTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C93BE6F21FFAFA80040F8E7 /* ActivitiesTableViewController.swift */; };
 		5CA0E89221EA54D00044B72E /* CafeDetailTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CA0E89121EA54D00044B72E /* CafeDetailTableViewController.swift */; };
 		5CB2A6512219BC560070EAE5 /* ActivityDetailTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CB2A6502219BC560070EAE5 /* ActivityDetailTableViewController.swift */; };
@@ -42,6 +47,12 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		5C39158D2285A35700A87E61 /* Region.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Region.swift; sourceTree = "<group>"; };
+		5C39158F2285B8A200A87E61 /* ANG.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = ANG.entitlements; sourceTree = "<group>"; };
+		5C3915912285B8A500A87E61 /* CloudKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CloudKit.framework; path = System/Library/Frameworks/CloudKit.framework; sourceTree = SDKROOT; };
+		5C3915932285BCAF00A87E61 /* CloudKitService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloudKitService.swift; sourceTree = "<group>"; };
+		5C3915952285C92500A87E61 /* SettingsTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsTableViewController.swift; sourceTree = "<group>"; };
+		5C3915972285D26500A87E61 /* SelectRegionsTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectRegionsTableViewController.swift; sourceTree = "<group>"; };
 		5C93BE6F21FFAFA80040F8E7 /* ActivitiesTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivitiesTableViewController.swift; sourceTree = "<group>"; };
 		5CA0E89121EA54D00044B72E /* CafeDetailTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CafeDetailTableViewController.swift; sourceTree = "<group>"; };
 		5CB2A6502219BC560070EAE5 /* ActivityDetailTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityDetailTableViewController.swift; sourceTree = "<group>"; };
@@ -70,6 +81,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5C3915922285B8A500A87E61 /* CloudKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -90,6 +102,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		5C3915902285B8A500A87E61 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				5C3915912285B8A500A87E61 /* CloudKit.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		5CBC516521E93F9B0079378B = {
 			isa = PBXGroup;
 			children = (
@@ -97,6 +117,7 @@
 				5CBC518521E93F9D0079378B /* ANGTests */,
 				5CBC519021E93F9D0079378B /* ANGUITests */,
 				5CBC516F21E93F9B0079378B /* Products */,
+				5C3915902285B8A500A87E61 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -113,9 +134,11 @@
 		5CBC517021E93F9B0079378B /* ANG */ = {
 			isa = PBXGroup;
 			children = (
+				5C39158F2285B8A200A87E61 /* ANG.entitlements */,
 				5CBC517121E93F9B0079378B /* AppDelegate.swift */,
+				5C3915932285BCAF00A87E61 /* CloudKitService.swift */,
 				5CBC51A121E940C10079378B /* Model */,
-				5CBC51A221E940D10079378B /* View Controller */,
+				5CBC51A221E940D10079378B /* View Controllers */,
 				5CBC517521E93F9B0079378B /* Main.storyboard */,
 				5CBC517821E93F9D0079378B /* Assets.xcassets */,
 				5CBC517A21E93F9D0079378B /* LaunchScreen.storyboard */,
@@ -145,24 +168,27 @@
 		5CBC51A121E940C10079378B /* Model */ = {
 			isa = PBXGroup;
 			children = (
-				5CBC519F21E940BD0079378B /* Cafe.swift */,
-				5CBC51A521E9423D0079378B /* AnnotatedLocation.swift */,
-				5CBC51A321E941810079378B /* Location.swift */,
-				5CD8B79521EE5C980095B21D /* Activity.swift */,
 				5CB2A6522219CCEC0070EAE5 /* User.swift */,
+				5C39158D2285A35700A87E61 /* Region.swift */,
+				5CBC519F21E940BD0079378B /* Cafe.swift */,
+				5CD8B79521EE5C980095B21D /* Activity.swift */,
+				5CBC51A321E941810079378B /* Location.swift */,
+				5CBC51A521E9423D0079378B /* AnnotatedLocation.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
 		};
-		5CBC51A221E940D10079378B /* View Controller */ = {
+		5CBC51A221E940D10079378B /* View Controllers */ = {
 			isa = PBXGroup;
 			children = (
 				5CBC517321E93F9B0079378B /* CafeMapViewController.swift */,
 				5CA0E89121EA54D00044B72E /* CafeDetailTableViewController.swift */,
 				5C93BE6F21FFAFA80040F8E7 /* ActivitiesTableViewController.swift */,
 				5CB2A6502219BC560070EAE5 /* ActivityDetailTableViewController.swift */,
+				5C3915952285C92500A87E61 /* SettingsTableViewController.swift */,
+				5C3915972285D26500A87E61 /* SelectRegionsTableViewController.swift */,
 			);
-			path = "View Controller";
+			path = "View Controllers";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -233,13 +259,24 @@
 				TargetAttributes = {
 					5CBC516D21E93F9B0079378B = {
 						CreatedOnToolsVersion = 10.1;
+						LastSwiftMigration = 1020;
+						SystemCapabilities = {
+							com.apple.Push = {
+								enabled = 1;
+							};
+							com.apple.iCloud = {
+								enabled = 1;
+							};
+						};
 					};
 					5CBC518121E93F9D0079378B = {
 						CreatedOnToolsVersion = 10.1;
+						LastSwiftMigration = 1020;
 						TestTargetID = 5CBC516D21E93F9B0079378B;
 					};
 					5CBC518C21E93F9D0079378B = {
 						CreatedOnToolsVersion = 10.1;
+						LastSwiftMigration = 1020;
 						TestTargetID = 5CBC516D21E93F9B0079378B;
 					};
 				};
@@ -296,6 +333,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5C3915942285BCAF00A87E61 /* CloudKitService.swift in Sources */,
+				5C3915982285D26500A87E61 /* SelectRegionsTableViewController.swift in Sources */,
+				5C3915962285C92500A87E61 /* SettingsTableViewController.swift in Sources */,
 				5CBC517421E93F9B0079378B /* CafeMapViewController.swift in Sources */,
 				5CB2A6512219BC560070EAE5 /* ActivityDetailTableViewController.swift in Sources */,
 				5CBC517221E93F9B0079378B /* AppDelegate.swift in Sources */,
@@ -303,6 +343,7 @@
 				5CBC51A421E941810079378B /* Location.swift in Sources */,
 				5CA0E89221EA54D00044B72E /* CafeDetailTableViewController.swift in Sources */,
 				5C93BE7021FFAFA80040F8E7 /* ActivitiesTableViewController.swift in Sources */,
+				5C39158E2285A35700A87E61 /* Region.swift in Sources */,
 				5CBC51A021E940BD0079378B /* Cafe.swift in Sources */,
 				5CB2A6532219CCEC0070EAE5 /* User.swift in Sources */,
 				5CBC51A621E9423D0079378B /* AnnotatedLocation.swift in Sources */,
@@ -480,6 +521,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = ANG/ANG.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = ZGNJ8Z375R;
 				INFOPLIST_FILE = ANG/Info.plist;
@@ -489,7 +531,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = nl.gerjantevelde.ANG;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 4.2;
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -498,6 +540,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = ANG/ANG.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = ZGNJ8Z375R;
 				INFOPLIST_FILE = ANG/Info.plist;
@@ -507,7 +550,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = nl.gerjantevelde.ANG;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 4.2;
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
@@ -527,7 +570,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = nl.gerjantevelde.ANGTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 4.2;
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/ANG.app/ANG";
 			};
@@ -548,7 +591,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = nl.gerjantevelde.ANGTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 4.2;
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/ANG.app/ANG";
 			};
@@ -568,7 +611,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = nl.gerjantevelde.ANGUITests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 4.2;
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_TARGET_NAME = ANG;
 			};
@@ -588,7 +631,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = nl.gerjantevelde.ANGUITests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 4.2;
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_TARGET_NAME = ANG;
 			};

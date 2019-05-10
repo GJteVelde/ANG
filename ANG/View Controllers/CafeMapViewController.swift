@@ -113,7 +113,7 @@ extension CafeMapViewController: MKMapViewDelegate {
         } else {
             let location = view.annotation as! AnnotatedLocation
             
-            if let index = annotations.index(of: location) {
+            if let index = annotations.firstIndex(of: location) {
                 let selectedAnnotation = annotations[index]
                 
                 mapView.removeAnnotation(selectedAnnotation)
