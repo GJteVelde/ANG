@@ -12,8 +12,12 @@ import MapKit
 class CafeDetailTableViewController: UITableViewController, MKMapViewDelegate {
     
     //MARK: Properties
-    var selectedCafe: String?
+    var cafeId: Cafe.RecordId!
     var cafe: Cafe?
+    var cafeAnnotations = [Cafe.CafeAnnotation]()
+    
+    var cloudKitService = CloudKitService.default
+    
     var locations: [Location] = []
     var activities: [Activity] = []
     
@@ -25,35 +29,11 @@ class CafeDetailTableViewController: UITableViewController, MKMapViewDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        //Find and set cafe corresponding to selectedCafe
-        if let selectedCafe = selectedCafe {
-            if let cafe = Cafes.all[selectedCafe] {
-                self.cafe = cafe
-            }
-        }
-        
-        //Find and set locations related to cafe
-        if let cafeLocations = cafe?.locations {
-            for cafeLocation in cafeLocations {
-                if let location = Locations.all[cafeLocation] {
-                    locations.append(location)
-                } else {
-                    print("CafeDetailTableVC: Could not add new location to locations.")
-                }
-            }
-        }
-        
-        //Show annotations of Cafe and center CafeMap
-        if !locations.isEmpty {
-            let locationAnnotations = AnnotatedLocation.returnAnnotations(of: locations)
-            let region = AnnotatedLocation.centerMapAround(locationAnnotations)
-            cafeLocationsMap.addAnnotations(locationAnnotations)
-            cafeLocationsMap.setRegion(region, animated: true)
-        } else {
-            print("CafeDetailTableVC: Could not show location-annotation of \(selectedCafe ?? "unknown Cafe") on map.")
-        }
+        cafeLocationsMap.delegate = self
+        loadCafe()
         
         //Show location-details of Cafe in cafeLocationsLabel
+        /*
         if !locations.isEmpty {
             let attributedText = NSMutableAttributedString()
             
@@ -71,11 +51,14 @@ class CafeDetailTableViewController: UITableViewController, MKMapViewDelegate {
             print("CafeDetailTableVC: Could not find and show location details.")
             cafeLocationsLabel.text = "Helaas kunnen wij momenteel geen locatie-details vinden."
         }
+        */
         
+        /*
         //Find activities of selected Cafe
         if cafe != nil {
             activities = Activities.ofCafe(cafe!.nameShort)
         }
+        */
         
         //Count and return amount of activities in activityLabel
         var activityLabelText = ""
@@ -128,35 +111,54 @@ class CafeDetailTableViewController: UITableViewController, MKMapViewDelegate {
     override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         return section == 0 ? CGFloat.leastNonzeroMagnitude : 32
     }
-    
+
+    //MARK - MapView Delegate Methods
     //Change appearence of annotations according to Cafe.isFavorite
     func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
-        let identifier = "location"
+        guard let annotation = annotation as? Cafe.CafeAnnotation else { return nil }
         
-        if annotation is AnnotatedLocation {
-            var annotationView = mapView.dequeueReusableAnnotationView(withIdentifier: identifier) as? MKMarkerAnnotationView
-            
-            if annotationView == nil {
-                annotationView = MKMarkerAnnotationView(annotation: annotation, reuseIdentifier: identifier)
-            } else {
-                annotationView!.annotation = annotation
-            }
-            
-            if let cafe = cafe {
-                if cafe.isFavorite {
-                    annotationView!.markerTintColor = UIColor.green
-                } else {
-                    annotationView!.markerTintColor = UIColor.red
-                }
-            }
-            return annotationView
+        let identifier = "cafe"
+        var annotationView: MKMarkerAnnotationView
+        
+        if let dequeuedView = mapView.dequeueReusableAnnotationView(withIdentifier: identifier) as? MKMarkerAnnotationView {
+            dequeuedView.annotation = annotation
+            annotationView = dequeuedView
         } else {
-            print("viewFor: annotation is not AnnotatedLocation.")
+            annotationView = MKMarkerAnnotationView(annotation: annotation, reuseIdentifier: identifier)
+            annotationView.canShowCallout = false
         }
         
-        return nil
+        if Cafe.isFavorite(cafeId: cafeId) {
+            annotationView.markerTintColor = UIColor.angYellow
+        } else {
+            annotationView.markerTintColor = UIColor.angBlue
+        }
+        
+        return annotationView
     }
-    
-    //MARK: - Segues
-    
+
+    //MARK: - Methods
+    func loadCafe() {
+        UIApplication.shared.isNetworkActivityIndicatorVisible = true
+        
+        cloudKitService.fetchCafe(cafeId: cafeId) { [unowned self] (result) in
+            UIApplication.shared.isNetworkActivityIndicatorVisible = false
+            
+            switch result {
+            case .failure(let error):
+                let alert = UIAlertController(title: "Kon cafe niet laden", message: error.localizedDescription, preferredStyle: .alert)
+                alert.addAction(UIAlertAction(title: "Oké", style: .default))
+                self.present(alert, animated: true)
+            case .success(let cafe):
+                self.cafe = cafe
+                
+                for cafeAnnotation in cafe.cafeAnnotations {
+                    self.cafeAnnotations.append(cafeAnnotation)
+                }
+                
+                self.cafeLocationsMap.addAnnotations(self.cafeAnnotations)
+                self.cafeLocationsMap.centerAround(self.cafeAnnotations)
+            }
+        }
+    }
 }

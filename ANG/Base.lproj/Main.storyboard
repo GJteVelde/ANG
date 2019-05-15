@@ -248,12 +248,12 @@
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="rGg-i4-7jA" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2175.1999999999998" y="1683.5082458770617"/>
+            <point key="canvasLocation" x="1993" y="1684"/>
         </scene>
         <!--Favoriete afdelingen-->
         <scene sceneID="86z-RK-X0o">
             <objects>
-                <tableViewController title="Favoriete afdelingen" id="CBc-RU-vgW" customClass="SelectRegionsTableViewController" customModule="ANG" customModuleProvider="target" sceneMemberID="viewController">
+                <tableViewController title="Favoriete afdelingen" id="CBc-RU-vgW" customClass="SelectFavoriteRegionsTableViewController" customModule="ANG" customModuleProvider="target" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="grouped" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="18" sectionFooterHeight="18" id="uTf-Xa-wly">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -276,7 +276,7 @@
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="hvX-hw-sAY" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2898" y="1684"/>
+            <point key="canvasLocation" x="2761" y="1684"/>
         </scene>
         <!--Activiteit-->
         <scene sceneID="2d5-3F-k4C">

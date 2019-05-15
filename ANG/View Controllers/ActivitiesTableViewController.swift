@@ -17,8 +17,8 @@ class ActivitiesTableViewController: UITableViewController {
         super.viewDidLoad()
         
         if let selectedCafe = selectedCafe {
-            activities = Activities.ofCafe(selectedCafe.nameShort)
-            title = selectedCafe.nameLong
+            activities = Activities.ofCafe(selectedCafe.name)
+            title = selectedCafe.name
         } else {
             activities = Activities.all
             title = "Activiteiten"

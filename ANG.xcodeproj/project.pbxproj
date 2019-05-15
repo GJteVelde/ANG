@@ -7,11 +7,16 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		5C09026F2289965100211114 /* UIColorExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C09026E2289965100211114 /* UIColorExtensions.swift */; };
+		5C0902762289B61600211114 /* GenericIdentifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C0902752289B61600211114 /* GenericIdentifier.swift */; };
+		5C0902792289BC4E00211114 /* Region.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C39158D2285A35700A87E61 /* Region.swift */; };
+		5C09027A2289BDCA00211114 /* GenericIdentifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C0902752289B61600211114 /* GenericIdentifier.swift */; };
 		5C39158E2285A35700A87E61 /* Region.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C39158D2285A35700A87E61 /* Region.swift */; };
 		5C3915922285B8A500A87E61 /* CloudKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5C3915912285B8A500A87E61 /* CloudKit.framework */; };
 		5C3915942285BCAF00A87E61 /* CloudKitService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C3915932285BCAF00A87E61 /* CloudKitService.swift */; };
 		5C3915962285C92500A87E61 /* SettingsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C3915952285C92500A87E61 /* SettingsTableViewController.swift */; };
-		5C3915982285D26500A87E61 /* SelectRegionsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C3915972285D26500A87E61 /* SelectRegionsTableViewController.swift */; };
+		5C3915982285D26500A87E61 /* SelectFavoriteRegionsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C3915972285D26500A87E61 /* SelectFavoriteRegionsTableViewController.swift */; };
+		5C512B8D228B0B9200D4AA71 /* MKMapViewExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C512B8C228B0B9200D4AA71 /* MKMapViewExtensions.swift */; };
 		5C93BE7021FFAFA80040F8E7 /* ActivitiesTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C93BE6F21FFAFA80040F8E7 /* ActivitiesTableViewController.swift */; };
 		5CA0E89221EA54D00044B72E /* CafeDetailTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CA0E89121EA54D00044B72E /* CafeDetailTableViewController.swift */; };
 		5CB2A6512219BC560070EAE5 /* ActivityDetailTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CB2A6502219BC560070EAE5 /* ActivityDetailTableViewController.swift */; };
@@ -24,8 +29,6 @@
 		5CBC518721E93F9D0079378B /* ANGTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CBC518621E93F9D0079378B /* ANGTests.swift */; };
 		5CBC519221E93F9D0079378B /* ANGUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CBC519121E93F9D0079378B /* ANGUITests.swift */; };
 		5CBC51A021E940BD0079378B /* Cafe.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CBC519F21E940BD0079378B /* Cafe.swift */; };
-		5CBC51A421E941810079378B /* Location.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CBC51A321E941810079378B /* Location.swift */; };
-		5CBC51A621E9423D0079378B /* AnnotatedLocation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CBC51A521E9423D0079378B /* AnnotatedLocation.swift */; };
 		5CD8B79621EE5C980095B21D /* Activity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CD8B79521EE5C980095B21D /* Activity.swift */; };
 /* End PBXBuildFile section */
 
@@ -47,12 +50,15 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		5C09026E2289965100211114 /* UIColorExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIColorExtensions.swift; sourceTree = "<group>"; };
+		5C0902752289B61600211114 /* GenericIdentifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenericIdentifier.swift; sourceTree = "<group>"; };
 		5C39158D2285A35700A87E61 /* Region.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Region.swift; sourceTree = "<group>"; };
 		5C39158F2285B8A200A87E61 /* ANG.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = ANG.entitlements; sourceTree = "<group>"; };
 		5C3915912285B8A500A87E61 /* CloudKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CloudKit.framework; path = System/Library/Frameworks/CloudKit.framework; sourceTree = SDKROOT; };
 		5C3915932285BCAF00A87E61 /* CloudKitService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloudKitService.swift; sourceTree = "<group>"; };
 		5C3915952285C92500A87E61 /* SettingsTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsTableViewController.swift; sourceTree = "<group>"; };
-		5C3915972285D26500A87E61 /* SelectRegionsTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectRegionsTableViewController.swift; sourceTree = "<group>"; };
+		5C3915972285D26500A87E61 /* SelectFavoriteRegionsTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectFavoriteRegionsTableViewController.swift; sourceTree = "<group>"; };
+		5C512B8C228B0B9200D4AA71 /* MKMapViewExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MKMapViewExtensions.swift; sourceTree = "<group>"; };
 		5C93BE6F21FFAFA80040F8E7 /* ActivitiesTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivitiesTableViewController.swift; sourceTree = "<group>"; };
 		5CA0E89121EA54D00044B72E /* CafeDetailTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CafeDetailTableViewController.swift; sourceTree = "<group>"; };
 		5CB2A6502219BC560070EAE5 /* ActivityDetailTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityDetailTableViewController.swift; sourceTree = "<group>"; };
@@ -71,8 +77,6 @@
 		5CBC519121E93F9D0079378B /* ANGUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ANGUITests.swift; sourceTree = "<group>"; };
 		5CBC519321E93F9D0079378B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		5CBC519F21E940BD0079378B /* Cafe.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Cafe.swift; sourceTree = "<group>"; };
-		5CBC51A321E941810079378B /* Location.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Location.swift; sourceTree = "<group>"; };
-		5CBC51A521E9423D0079378B /* AnnotatedLocation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnnotatedLocation.swift; sourceTree = "<group>"; };
 		5CD8B79521EE5C980095B21D /* Activity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Activity.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -102,6 +106,32 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		5C0902702289965A00211114 /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				5C512B8C228B0B9200D4AA71 /* MKMapViewExtensions.swift */,
+				5C09026E2289965100211114 /* UIColorExtensions.swift */,
+			);
+			path = Extensions;
+			sourceTree = "<group>";
+		};
+		5C0902712289A08200211114 /* Settings */ = {
+			isa = PBXGroup;
+			children = (
+				5C3915952285C92500A87E61 /* SettingsTableViewController.swift */,
+				5C3915972285D26500A87E61 /* SelectFavoriteRegionsTableViewController.swift */,
+			);
+			name = Settings;
+			sourceTree = "<group>";
+		};
+		5C0902742289B3EA00211114 /* Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				5C3915932285BCAF00A87E61 /* CloudKitService.swift */,
+			);
+			path = Controllers;
+			sourceTree = "<group>";
+		};
 		5C3915902285B8A500A87E61 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
@@ -136,9 +166,10 @@
 			children = (
 				5C39158F2285B8A200A87E61 /* ANG.entitlements */,
 				5CBC517121E93F9B0079378B /* AppDelegate.swift */,
-				5C3915932285BCAF00A87E61 /* CloudKitService.swift */,
-				5CBC51A121E940C10079378B /* Model */,
+				5CBC51A121E940C10079378B /* Models */,
+				5C0902742289B3EA00211114 /* Controllers */,
 				5CBC51A221E940D10079378B /* View Controllers */,
+				5C0902702289965A00211114 /* Extensions */,
 				5CBC517521E93F9B0079378B /* Main.storyboard */,
 				5CBC517821E93F9D0079378B /* Assets.xcassets */,
 				5CBC517A21E93F9D0079378B /* LaunchScreen.storyboard */,
@@ -165,17 +196,16 @@
 			path = ANGUITests;
 			sourceTree = "<group>";
 		};
-		5CBC51A121E940C10079378B /* Model */ = {
+		5CBC51A121E940C10079378B /* Models */ = {
 			isa = PBXGroup;
 			children = (
-				5CB2A6522219CCEC0070EAE5 /* User.swift */,
+				5C0902752289B61600211114 /* GenericIdentifier.swift */,
 				5C39158D2285A35700A87E61 /* Region.swift */,
 				5CBC519F21E940BD0079378B /* Cafe.swift */,
 				5CD8B79521EE5C980095B21D /* Activity.swift */,
-				5CBC51A321E941810079378B /* Location.swift */,
-				5CBC51A521E9423D0079378B /* AnnotatedLocation.swift */,
+				5CB2A6522219CCEC0070EAE5 /* User.swift */,
 			);
-			path = Model;
+			path = Models;
 			sourceTree = "<group>";
 		};
 		5CBC51A221E940D10079378B /* View Controllers */ = {
@@ -185,8 +215,7 @@
 				5CA0E89121EA54D00044B72E /* CafeDetailTableViewController.swift */,
 				5C93BE6F21FFAFA80040F8E7 /* ActivitiesTableViewController.swift */,
 				5CB2A6502219BC560070EAE5 /* ActivityDetailTableViewController.swift */,
-				5C3915952285C92500A87E61 /* SettingsTableViewController.swift */,
-				5C3915972285D26500A87E61 /* SelectRegionsTableViewController.swift */,
+				5C0902712289A08200211114 /* Settings */,
 			);
 			path = "View Controllers";
 			sourceTree = "<group>";
@@ -334,19 +363,20 @@
 			buildActionMask = 2147483647;
 			files = (
 				5C3915942285BCAF00A87E61 /* CloudKitService.swift in Sources */,
-				5C3915982285D26500A87E61 /* SelectRegionsTableViewController.swift in Sources */,
+				5C3915982285D26500A87E61 /* SelectFavoriteRegionsTableViewController.swift in Sources */,
 				5C3915962285C92500A87E61 /* SettingsTableViewController.swift in Sources */,
+				5C0902762289B61600211114 /* GenericIdentifier.swift in Sources */,
 				5CBC517421E93F9B0079378B /* CafeMapViewController.swift in Sources */,
 				5CB2A6512219BC560070EAE5 /* ActivityDetailTableViewController.swift in Sources */,
 				5CBC517221E93F9B0079378B /* AppDelegate.swift in Sources */,
 				5CD8B79621EE5C980095B21D /* Activity.swift in Sources */,
-				5CBC51A421E941810079378B /* Location.swift in Sources */,
 				5CA0E89221EA54D00044B72E /* CafeDetailTableViewController.swift in Sources */,
+				5C09026F2289965100211114 /* UIColorExtensions.swift in Sources */,
 				5C93BE7021FFAFA80040F8E7 /* ActivitiesTableViewController.swift in Sources */,
 				5C39158E2285A35700A87E61 /* Region.swift in Sources */,
+				5C512B8D228B0B9200D4AA71 /* MKMapViewExtensions.swift in Sources */,
 				5CBC51A021E940BD0079378B /* Cafe.swift in Sources */,
 				5CB2A6532219CCEC0070EAE5 /* User.swift in Sources */,
-				5CBC51A621E9423D0079378B /* AnnotatedLocation.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -354,7 +384,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5C0902792289BC4E00211114 /* Region.swift in Sources */,
 				5CBC518721E93F9D0079378B /* ANGTests.swift in Sources */,
+				5C09027A2289BDCA00211114 /* GenericIdentifier.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

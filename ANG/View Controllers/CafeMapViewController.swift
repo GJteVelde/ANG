@@ -9,172 +9,88 @@
 import UIKit
 import MapKit
 
-class CafeMapViewController: UIViewController {
+class CafeMapViewController: UIViewController, MKMapViewDelegate {
 
     //MARK: - Properties
     @IBOutlet weak var cafesMap: MKMapView!
-    var annotations = [AnnotatedLocation]()
+    var cloudKitService = CloudKitService.default
+    
+    var cafes = [Cafe]()
+    var cafeAnnotations = [Cafe.CafeAnnotation]()
     
     //MARK: - View Controller Life Cycle
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        //Test data
-        fillMapWithExampleData()
-        
-        //Allow switching as user for authorization purposes
-        navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Change User", style: .plain, target: self, action: #selector(editCurrentUser))
-        
-        //Center of mapForCafes
-        //Create array from Cafes.all dictionary
-        let cafes: [Cafe] = Cafes.all.map { $0.value }
-        annotations = AnnotatedLocation.returnAnnotations(of: cafes)
-        let region = AnnotatedLocation.centerMapAround(annotations)
-        cafesMap.setRegion(region, animated: true)
-        
-        //Show cafés on the map.
         cafesMap.delegate = self
-        cafesMap.addAnnotations(annotations)
+        loadAllCafes()
     }
-    
-    //Show alertController to ask if user wants to login as volunteer (allow editing-mode) or not (forbid editing-mode)
-    @objc func editCurrentUser() {
-        let alertController = UIAlertController(title: "Continue as volunteer?", message: "Continuing as volunteer allows you to edit content.", preferredStyle: .alert)
-        alertController.addAction(UIAlertAction(title: "Yes", style: .default, handler: { (_) in
-            CurrentUser.name = "Test-Admin"
-            self.checkAuthorization()
-        }))
-        alertController.addAction(UIAlertAction(title: "No", style: .default, handler: { (_) in
-            CurrentUser.name = ""
-            self.checkAuthorization()
-        }))
-        present(alertController, animated: true, completion: nil)
-    }
-    
-    func checkAuthorization() {
-        if CurrentUser.isAuthorized() {
-            navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .edit, target: self, action: #selector(editingMode))
-        } else {
-            navigationItem.rightBarButtonItem = nil
+
+    //MARK: - Methods
+    func loadAllCafes() {
+        UIApplication.shared.isNetworkActivityIndicatorVisible = true
+        
+        cloudKitService.fetchAllCafesBasicDetails { [unowned self] (result) in
+            UIApplication.shared.isNetworkActivityIndicatorVisible = false
+            
+            switch result {
+            case .failure(let resultError):
+                let alert = UIAlertController(title: "Kon cafés niet laden", message: resultError.localizedDescription, preferredStyle: .alert)
+                alert.addAction(UIAlertAction(title: "Oké", style: .default))
+                self.present(alert, animated: true)
+            case .success(let resultCafes):
+                self.cafes = resultCafes
+                
+                for cafe in resultCafes {
+                    for cafeAnnotation in cafe.cafeAnnotations {
+                        self.cafeAnnotations.append(cafeAnnotation)
+                    }
+                }
+                
+                self.cafesMap.addAnnotations(self.cafeAnnotations)
+                self.cafesMap.centerAround(self.cafeAnnotations)
+            }
         }
     }
     
-    @objc func editingMode() {
-        print("Enter editing mode.")
-    }
-}
+    //MARK: - Segue
+     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == "CafeDetailSegue" {
+            let destinationVC = segue.destination as! CafeDetailTableViewController
+            guard let selectedCafe = (sender as? MKAnnotationView)?.annotation as? Cafe.CafeAnnotation else { return }
+            destinationVC.cafeId = selectedCafe.cafeId
+            destinationVC.title = selectedCafe.title!
+        }
+     }
 
-extension CafeMapViewController: MKMapViewDelegate {
-    //Show MkAnnotationViews on map, allow user to mark cafe as favorite, and create segue to CafeDetailViewController.
+    //MARK: - MapView Delegate Methods
     func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
-        guard let annotation = annotation as? AnnotatedLocation else { return nil }
+        guard let annotation = annotation as? Cafe.CafeAnnotation else { return nil }
         
         let identifier = "cafe"
-        var view: MKMarkerAnnotationView
+        var annotationView: MKMarkerAnnotationView
         
         if let dequeuedView = mapView.dequeueReusableAnnotationView(withIdentifier: identifier) as? MKMarkerAnnotationView {
             dequeuedView.annotation = annotation
-            view = dequeuedView
+            annotationView = dequeuedView
         } else {
-            view = MKMarkerAnnotationView(annotation: annotation, reuseIdentifier: identifier)
-            view.canShowCallout = true
-            view.rightCalloutAccessoryView = UIButton(type: .detailDisclosure)
-            
-            let favoriteButton = UIButton(type: .custom)
-            favoriteButton.frame.size = view.rightCalloutAccessoryView!.frame.size
-            favoriteButton.layer.cornerRadius = view.rightCalloutAccessoryView!.frame.size.height / 2
-            favoriteButton.tintColor = UIColor.white
-            favoriteButton.titleLabel?.font = UIFont.boldSystemFont(ofSize: 30)
-            favoriteButton.contentEdgeInsets = UIEdgeInsets(top: -10, left: -10, bottom: -6, right: -10)
-            view.leftCalloutAccessoryView = favoriteButton
-            
+            annotationView = MKMarkerAnnotationView(annotation: annotation, reuseIdentifier: identifier)
+            annotationView.canShowCallout = true
+            annotationView.rightCalloutAccessoryView = UIButton(type: .detailDisclosure)
         }
         
-        if let isFavorite = annotation.isFavorite, let favoriteButton = view.leftCalloutAccessoryView as? UIButton {
-            if isFavorite {
-                view.markerTintColor = UIColor.green
-                favoriteButton.backgroundColor = UIColor.red
-                favoriteButton.setTitle("-", for: .normal)
-            } else {
-                view.markerTintColor = UIColor.red
-                favoriteButton.backgroundColor = UIColor.green
-                favoriteButton.setTitle("+", for: .normal)
-            }
+        if Cafe.isFavorite(cafeId: annotation.cafeId) {
+            annotationView.markerTintColor = UIColor.angYellow
         } else {
-            view.markerTintColor = UIColor.red
+            annotationView.markerTintColor = UIColor.angBlue
         }
-        
-        return view
+
+        return annotationView
     }
     
     func mapView(_ mapView: MKMapView, annotationView view: MKAnnotationView, calloutAccessoryControlTapped control: UIControl) {
         if view.rightCalloutAccessoryView == control {
             performSegue(withIdentifier: "CafeDetailSegue", sender: view)
-        } else {
-            let location = view.annotation as! AnnotatedLocation
-            
-            if let index = annotations.firstIndex(of: location) {
-                let selectedAnnotation = annotations[index]
-                
-                mapView.removeAnnotation(selectedAnnotation)
-                selectedAnnotation.isFavorite = !selectedAnnotation.isFavorite!
-                Cafes.all[selectedAnnotation.cafeShortName!]?.isFavorite = selectedAnnotation.isFavorite!
-                mapView.addAnnotation(selectedAnnotation)
-                
-                //Check (and change) other locations of same cafe
-                for i in annotations {
-                    if i.cafeShortName == selectedAnnotation.cafeShortName {
-                        mapView.removeAnnotation(i)
-                        i.isFavorite = selectedAnnotation.isFavorite
-                        mapView.addAnnotation(i)
-                    }
-                }
-            }
         }
-    }
-    
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if segue.identifier == "CafeDetailSegue" {
-            let destinationVC = segue.destination as! CafeDetailTableViewController
-            let selectedCafe = (sender as! MKAnnotationView).annotation!.title!
-            destinationVC.navigationItem.title = selectedCafe
-            destinationVC.selectedCafe = selectedCafe?.replacingOccurrences(of: "Alzheimer Café ", with: "")
-        }
-    }
-}
-
-extension CafeMapViewController {
-    func fillMapWithExampleData() {
-        _ = [
-            Cafe(nameShort: "Groningen", locations: ["Bernlef"], isFavorite: true),
-            Cafe(nameShort: "Haren", locations: ["De Dilgt"], isFavorite: false),
-            Cafe(nameShort: "Bedum", locations: ["Alegunda Ilberi"], isFavorite: false),
-            Cafe(nameShort: "Hoogezand-Sappemeer", locations: ["De Burcht"], isFavorite: false),
-            Cafe(nameShort: "Oldambt", locations: ["De Blanckenborg"], isFavorite: false),
-            Cafe(nameShort: "Westerwolde-Kanaalstreek", locations: ["Maarsheerd"], isFavorite: false),
-            Cafe(nameShort: "Veendam", locations: ["Breehorn", "Wildervanck"], isFavorite: true)
-        ]
-        
-        _ = [
-            Location(nameShort: "Bernlef", nameLong: "Woonzorgcentrum Bernlef", latitude: 53.2311925, longitude: 6.540431000000012),
-            Location(nameShort: "De Dilgt", nameLong: "Woonzorgcentrum De Dilgt", latitude: 53.182748, longitude: 6.5955295999999635),
-            Location(nameShort: "Alegunda Ilberi", nameLong: "Zorgcentrum Alegunda Ilberi", latitude: 53.2978878, longitude: 6.601139500000045),
-            Location(nameShort: "De Burcht", nameLong: "Woonzorgcentrum De Burcht", latitude: 53.150691, longitude: 6.754647999999975),
-            Location(nameShort: "De Blanckenborg", nameLong: "Zorgcentrum De Blanckenborg", latitude: 53.108733, longitude: 7.082443000000012),
-            Location(nameShort: "Maarsheerd", nameLong: "Woon- en Zorgcentrum Maarsheerd", latitude: 52.99323039999999, longitude: 6.949502299999949),
-            Location(nameShort: "Breehorn", nameLong: "Woonservicecentrum Breehorn", latitude: 53.0989283, longitude: 6.867970700000001),
-            Location(nameShort: "Wildervanck", nameLong: "Woonzorgcentrum A.G. Wildervanck", latitude: 53.073946, longitude: 6.858611200000041)
-        ]
-        
-        _ = [
-            Activity(title: "Activity 1", location: "Bernlef", cafe: "Groningen"),
-            Activity(title: "Activity 2", location: "Bernlef", cafe: "Groningen"),
-            Activity(title: "Activity 3", location: "Bernlef", cafe: "Groningen"),
-            Activity(title: "Activity 4", location: "Breehorn", cafe: "Veendam"),
-            Activity(title: "Activity 5", location: "Wildervanck", cafe: "Veendam"),
-            Activity(title: "Activity 6", location: "Breehorn", cafe: "Veendam"),
-            Activity(title: "Activity 7", location: "Wildervanck", cafe: "Veendam"),
-            Activity(title: "Activity 8", location: "Breehorn", cafe: "Veendam")
-        ]
     }
 }

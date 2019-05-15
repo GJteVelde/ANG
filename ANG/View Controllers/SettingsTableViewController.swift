@@ -15,7 +15,6 @@ fileprivate enum SettingsSection: Int {
 class SettingsTableViewController: UITableViewController {
 
     //MARK: - Objects and Properties
-    var favoriteRegionsByName = [String]()
     
     //MARK: - Life Cycle
     override func viewDidLoad() {
@@ -27,7 +26,6 @@ class SettingsTableViewController: UITableViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(true)
-        loadFavoriteRegions()
         
         tableView.reloadRows(at: [IndexPath(row: 0, section: SettingsSection.favoriteRegion.rawValue)], with: .automatic)
     }
@@ -63,21 +61,8 @@ class SettingsTableViewController: UITableViewController {
         let cell = tableView.dequeueReusableCell(withIdentifier: "SettingsCell", for: indexPath)
         
         if indexPath == IndexPath(row: 0, section: SettingsSection.favoriteRegion.rawValue) {
-            
-            var cellText = ""
-            if favoriteRegionsByName.count == 0 {
-                cellText = "Er is nog geen favoriete afdeling geselecteerd."
-            } else if favoriteRegionsByName.count == 1 {
-                cellText = "Uw favoriete afdeling is \(favoriteRegionsByName.first!)."
-            } else {
-                var tempFavoriteRegionsByName = favoriteRegionsByName
-                let lastRegion = tempFavoriteRegionsByName.removeLast()
-                let favoriteRegionsString = tempFavoriteRegionsByName.joined(separator: ", ")
-                cellText = "Uw favoriete afdelingen zijn \(favoriteRegionsString) en \(lastRegion)."
-            }
-            
             cell.accessoryType = .disclosureIndicator
-            cell.textLabel?.text = cellText
+            cell.textLabel?.text = Region.returnLocallyFavoriteRegionsAsString()
         }
         
         return cell
@@ -88,10 +73,5 @@ class SettingsTableViewController: UITableViewController {
         if indexPath == IndexPath(row: 0, section: SettingsSection.favoriteRegion.rawValue) {
             performSegue(withIdentifier: "SelectFavoriteRegionSegue", sender: self)
         }
-    }
-    
-    //MARK: - Methods
-    func loadFavoriteRegions() {
-        favoriteRegionsByName = Region.loadLocallyStoredFavoriteRegionsByIdName().values.sorted()
     }
 }

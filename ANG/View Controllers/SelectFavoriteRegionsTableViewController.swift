@@ -8,16 +8,14 @@
 
 import UIKit
 
-class SelectRegionsTableViewController: UITableViewController {
+class SelectFavoriteRegionsTableViewController: UITableViewController {
 
     //MARK: - Objects and Properties
     var cloudKitService: CloudKitService!
     
-    var favoriteRegionsByIdName = [String: String]()
-    var regions = [String: [Region]]()
-    var provinces = [String]()
-    
-    var activityIndicator: UIActivityIndicatorView!
+    var favoriteRegionsById = [Region.RecordId: String]()
+    var regions = [Region.Province: [Region]]()
+    var provinces = [Region.Province]()
     
     //MARK: - Life Cycle
     override func viewDidLoad() {
@@ -25,7 +23,7 @@ class SelectRegionsTableViewController: UITableViewController {
         
         cloudKitService = CloudKitService.default
         
-        favoriteRegionsByIdName = Region.loadLocallyStoredFavoriteRegionsByIdName()
+        favoriteRegionsById = Region.loadLocallyStoredFavoriteRegionsById()
         loadAllRegions()
     }
 
@@ -40,7 +38,7 @@ class SelectRegionsTableViewController: UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        return provinces[section]
+        return provinces[section].rawValue
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -48,12 +46,13 @@ class SelectRegionsTableViewController: UITableViewController {
         
         let province = provinces[indexPath.section]
         let region = regions[province]![indexPath.row]
+        let favoriteRegion = region.isLocallyFavoriteRegion()
         
-        if favoriteRegionsByIdName.keys.contains(region.regionID.recordName) {
-            if favoriteRegionsByIdName[region.regionID.recordName] != region.name {
-                cell.textLabel?.text = favoriteRegionsByIdName[region.regionID.recordName]
+        if favoriteRegion.isFavorite {
+            if let localName = favoriteRegion.localName {
+                cell.textLabel?.text = localName
                 cell.accessoryType = .detailButton
-                cell.backgroundColor = UIColor(red: 1, green: 165/255, blue: 0, alpha: 0.25)
+                cell.backgroundColor = UIColor.angYellow
             } else {
                 cell.accessoryType = .checkmark
                 cell.textLabel?.text = region.name
@@ -62,13 +61,12 @@ class SelectRegionsTableViewController: UITableViewController {
             cell.textLabel?.text = region.name
         }
         
+        cell.tintColor = UIColor.angBlue
         return cell
     }
     
     //MARK: - Table View Delegate Methods
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        //FIXME: Cells are not updated correctly.
-        //Data, however, is stored correctly.
         guard let cell = tableView.cellForRow(at: indexPath) else { return }
         
         let province = provinces[indexPath.section]
@@ -76,45 +74,49 @@ class SelectRegionsTableViewController: UITableViewController {
         
         if cell.accessoryType == .none {
             cell.accessoryType = .checkmark
-            favoriteRegionsByIdName[region.regionID.recordName] = region.name
-            Region.saveLocallyFavoriteRegionsByIdName(favoriteRegionsByIdName)
+            cell.tintColor = UIColor.angBlue
+            region.saveLocallyAsFavoriteRegion()
         } else if cell.accessoryType == .checkmark {
             cell.accessoryType = .none
-            favoriteRegionsByIdName.removeValue(forKey: region.regionID.recordName)
-            Region.saveLocallyFavoriteRegionsByIdName(favoriteRegionsByIdName)
-        } else if cell.accessoryType == .detailButton {
-            let nameOld = favoriteRegionsByIdName[region.regionID.recordName]!
-            let nameNew = region.name
-            
-            let alert = UIAlertController(title: "Nieuwe naam", message: "Uw favoriete afdeling '\(nameOld)' heeft een nieuwe naam gekregen: \(nameNew).", preferredStyle: .alert)
-            alert.addAction(UIAlertAction(title: "Oké", style: .default, handler: { [unowned self] (_) in
-                cell.backgroundColor = .white
-                cell.textLabel?.text = nameNew
-                cell.accessoryType = .checkmark
-                self.favoriteRegionsByIdName[region.regionID.recordName] = nameNew
-                Region.saveLocallyFavoriteRegionsByIdName(self.favoriteRegionsByIdName)
-            }))
-            present(alert, animated: true)
+            region.deleteLocallyAsFavoriteRegion()
         }
         tableView.deselectRow(at: indexPath, animated: false)
     }
     
+    override func tableView(_ tableView: UITableView, accessoryButtonTappedForRowWith indexPath: IndexPath) {
+        guard let cell = tableView.cellForRow(at: indexPath) else { return }
+        
+        let province = provinces[indexPath.section]
+        let region = regions[province]![indexPath.row]
+        
+        let nameOld = cell.textLabel!.text!
+        let nameNew = region.name
+        
+        let alert = UIAlertController(title: "Nieuwe naam", message: "Uw favoriete afdeling '\(nameOld)' heeft een nieuwe naam gekregen: \(nameNew).", preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "Oké", style: .default, handler: { (_) in
+            cell.backgroundColor = .white
+            cell.textLabel?.text = nameNew
+            cell.accessoryType = .checkmark
+            region.saveLocallyAsFavoriteRegion()
+        }))
+        present(alert, animated: true)
+    }
+    
     //MARK: - Methods
     func loadAllRegions() {
-        activityIndicator = UIActivityIndicatorView(style: .gray)
-        activityIndicator.hidesWhenStopped = true
-        activityIndicator.startAnimating()
-        navigationItem.rightBarButtonItem = UIBarButtonItem(customView: activityIndicator)
+        UIApplication.shared.isNetworkActivityIndicatorVisible = true
         
-        var regionsUnsorted = [String: [Region]]()
+        var regionsUnsorted = [Region.Province: [Region]]()
             
         cloudKitService.fetchAllRegions { [unowned self] (result) in
+            UIApplication.shared.isNetworkActivityIndicatorVisible = false
+            
             switch result {
             case .failure(let resultError):
                 print(resultError.localizedDescription)
                 
-                let alert = UIAlertController(title: "Failed to fetch regions", message: resultError.localizedDescription, preferredStyle: .alert)
-                alert.addAction(UIAlertAction(title: "OK", style: .default))
+                let alert = UIAlertController(title: "Kon afdelingen niet laden", message: resultError.localizedDescription, preferredStyle: .alert)
+                alert.addAction(UIAlertAction(title: "Oké", style: .default))
                 self.present(alert, animated: true)
                 
             case .success(let resultRegions):
@@ -132,7 +134,6 @@ class SelectRegionsTableViewController: UITableViewController {
                 self.provinces = self.regions.keys.sorted()
                 
                 self.tableView.reloadData()
-                self.activityIndicator.stopAnimating()
             }
         }
     }
