@@ -19,6 +19,9 @@ struct Cafe {
             name: "name",
             region: "region",
             locations: "locations",
+            addresses: "addresses",
+            information: "information",
+            headerImage: "headerImage",
             favoriteCafesById: "FavoriteCafesById",
             recordType: "Cafe"
         )
@@ -60,15 +63,37 @@ struct Cafe {
     var locations: [CLLocation] {
         get {
             return record.value(forKey: Cafe.keys.locations) as! [CLLocation]
-        } set {
+        }
+        set {
             record.setValue(newValue, forKey: Cafe.keys.locations)
         }
     }
     
-    static var favoriteCafesById: [Cafe.RecordId: String] {
+    var addresses: [String] {
         get {
-            return Cafe.loadLocallyStoredFavoriteCafesById()
+            return record.value(forKey: Cafe.keys.addresses) as? [String] ?? [String]()
         }
+        set {
+            record.setValue(newValue, forKey: Cafe.keys.addresses)
+        }
+    }
+    
+    var information: String {
+        get {
+            return record.value(forKey: Cafe.keys.information) as? String ?? "Er is geen informatie beschikbaar."
+        }
+        set {
+            record.setValue(newValue, forKey: Cafe.keys.information)
+        }
+    }
+    
+    var headerImage: UIImage? {
+        get {
+            guard let headerImageUrl = (record.value(forKey: Cafe.keys.headerImage) as? CKAsset)?.fileURL else { return nil }
+            guard let data = try? Data(contentsOf: headerImageUrl) else { return nil }
+            return UIImage(data: data)
+        }
+        //TODO: implement 'set' for headerImage.
     }
 }
 
@@ -79,6 +104,33 @@ extension Cafe: Comparable {
     
     static func == (lhs: Cafe, rhs: Cafe) -> Bool {
         return lhs.recordId == rhs.recordId
+    }
+}
+
+extension Cafe {
+    func returnAddressAsAttributedString() -> NSAttributedString {
+        guard !addresses.isEmpty else {
+            return NSAttributedString(string: "Er zijn geen adresgegevens beschikbaar.")
+        }
+        
+        let addressAttributedString = NSMutableAttributedString(string: "")
+        
+        for (index, address) in addresses.enumerated() {
+            let addressAsNSString = address as NSString
+            let lineBreakRange = addressAsNSString.range(of: "\n")
+            let boldRange: NSRange = NSRange(location: 0, length: lineBreakRange.location)
+            
+            let attributedAddress = NSMutableAttributedString(string: address)
+            let attribute = [NSAttributedString.Key.font: UIFont.boldSystemFont(ofSize: 17)]
+            attributedAddress.addAttributes(attribute, range: boldRange)
+            addressAttributedString.append(attributedAddress)
+            
+            if index != (addresses.endIndex - 1) {
+               addressAttributedString.append(NSAttributedString(string: "\n\n"))
+            }
+        }
+        
+        return NSAttributedString(attributedString: addressAttributedString)
     }
 }
 
@@ -109,10 +161,6 @@ extension Cafe {
 }
 
 extension Cafe {
-    /**
-     Loads favorite cafés from UserDefaults.
-     - Returns: A dictionary of cafes containing the CafeIds and names.
-    */
     private static func loadLocallyStoredFavoriteCafesById() -> [Cafe.RecordId: String] {
         let userDefaults = UserDefaults.standard
         
@@ -130,11 +178,6 @@ extension Cafe {
         return [Cafe.RecordId: String]()
     }
 
-    /**
-     Saves favorite cafés in UserDefaults with the CafeIds and names.
-     - Parameters:
-        - cafes: A dictionary with CafeIds as keys and names as values.
-    */
     private static func saveLocallyFavoriteCafesById(_ cafes: [Cafe.RecordId: String]) {
         var saveableCafes = [String: String]()
         
@@ -152,7 +195,7 @@ extension Cafe {
         
         favoriteCafes[cafeId] = cafeName
         
-        Cafe.saveLocallyFavoriteCafesById(favoriteCafesById)
+        Cafe.saveLocallyFavoriteCafesById(favoriteCafes)
     }
     
     static func deleteLocallyFavoriteCafe(byId cafeId: Cafe.RecordId) {
@@ -164,41 +207,15 @@ extension Cafe {
     }
     
     func saveLocallyAsFavoriteCafe() {
-        var favoriteCafes = Cafe.loadLocallyStoredFavoriteCafesById()
-        
-        favoriteCafes[self.recordId] = self.name
-        
-        Cafe.saveLocallyFavoriteCafesById(favoriteCafes)
+        Cafe.saveLocallyFavoriteCafe(byId: self.recordId, cafeName: self.name)
     }
     
     func deleteLocallyAsFavoriteCafe() {
-        var favoriteCafes = Cafe.loadLocallyStoredFavoriteCafesById()
-        
-        favoriteCafes.removeValue(forKey: self.recordId)
-        
-        Cafe.saveLocallyFavoriteCafesById(favoriteCafes)
+        Cafe.deleteLocallyFavoriteCafe(byId: self.recordId)
     }
     
     static func isFavorite(cafeId: Cafe.RecordId) -> Bool {
         let favoriteCafes = Cafe.loadLocallyStoredFavoriteCafesById()
         return favoriteCafes.keys.contains(cafeId)
-    }
-    
-    /**
-     Checks if the cafe is locally stored as a favorite cafe.
-     - Returns: A tuple (*favorite*, *name?*) where name may return a String if the name saved locally is different from the name on the server. If the local name and the name on the server are equal, or if the cafe is not saved locally as favorite, it name returns nil.
-     */
-    func isLocallyFavoriteRegion() -> (isFavorite: Bool, localName: String?) {
-        var favoriteCafes = Cafe.loadLocallyStoredFavoriteCafesById()
-        
-        if let savedName = favoriteCafes[self.recordId] {
-            if savedName == self.name {
-                return (true, nil)
-            } else {
-                return (true, savedName)
-            }
-        }
-        
-        return (false, nil)
     }
 }

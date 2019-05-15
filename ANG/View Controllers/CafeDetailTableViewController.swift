@@ -16,42 +16,41 @@ class CafeDetailTableViewController: UITableViewController, MKMapViewDelegate {
     var cafe: Cafe?
     var cafeAnnotations = [Cafe.CafeAnnotation]()
     
+    var isFavorite = false {
+        didSet {
+            if isFavorite {
+                saveFavoriteButton.setTitle("Verwijder als favoriet", for: .normal)
+            } else {
+                saveFavoriteButton.setTitle("Voeg toe als favoriet", for: .normal)
+            }
+        }
+    }
+    
     var cloudKitService = CloudKitService.default
     
-    var locations: [Location] = []
     var activities: [Activity] = []
     
+    @IBOutlet weak var headerImageView: UIImageView!
+    @IBOutlet weak var informationLabel: UILabel!
     @IBOutlet weak var cafeLocationsMap: MKMapView!
     @IBOutlet weak var cafeLocationsLabel: UILabel!
     @IBOutlet var activityLabel: UILabel!
+    @IBOutlet weak var saveFavoriteButton: UIButton!
     
     //MARK: - View Controller Life Cycle
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        cafeLocationsMap.delegate = self
-        loadCafe()
+        headerImageView.alpha = 0
         
-        //Show location-details of Cafe in cafeLocationsLabel
-        /*
-        if !locations.isEmpty {
-            let attributedText = NSMutableAttributedString()
-            
-            let attrs = [NSAttributedString.Key.font: UIFont.boldSystemFont(ofSize: 17)]
-            
-            for (index, location) in locations.enumerated() {
-                attributedText.append(NSMutableAttributedString(string: "\(location.nameLong)\n", attributes: attrs))
-                attributedText.append(NSMutableAttributedString(string: location.nameShort))
-                if index != (locations.count - 1) {
-                    attributedText.append(NSMutableAttributedString(string: "\n\n"))
-                }
-            }
-            cafeLocationsLabel.attributedText = attributedText
-        } else {
-            print("CafeDetailTableVC: Could not find and show location details.")
-            cafeLocationsLabel.text = "Helaas kunnen wij momenteel geen locatie-details vinden."
-        }
-        */
+        cafeLocationsMap.delegate = self
+        cafeLocationsMap.isZoomEnabled = false
+        cafeLocationsMap.isPitchEnabled = false
+        cafeLocationsMap.isRotateEnabled = false
+        cafeLocationsMap.isScrollEnabled = false
+        cafeLocationsMap.isUserInteractionEnabled = false
+        
+        loadCafe()
         
         /*
         //Find activities of selected Cafe
@@ -88,32 +87,30 @@ class CafeDetailTableViewController: UITableViewController, MKMapViewDelegate {
             cell.accessoryType = .disclosureIndicator
         }
     }
+
     
     //MARK: - Table View Delegate Methods
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        if indexPath.section == 0 && indexPath.row == 0 {
-            return (self.view!.bounds.height / 4)
-        } else {
-            return UITableView.automaticDimension
+        if indexPath.section == TableSection.headerImage.rawValue && indexPath.row == 0 {
+            if cafe?.headerImage != nil {
+                return view.bounds.height / 4
+            } else {
+                return CGFloat.leastNonzeroMagnitude
+            }
+        } else if indexPath.section == TableSection.location.rawValue && indexPath.row == 0 {
+            return view.bounds.height / 4
         }
+        return UITableView.automaticDimension
     }
     
-    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        guard indexPath == IndexPath(row: 0, section: 1) && !activities.isEmpty else { return }
-        
-        if let destination = storyboard?.instantiateViewController(withIdentifier: "ActivitiesIdentifier") as? ActivitiesTableViewController {
-            destination.selectedCafe = cafe
-            navigationController?.pushViewController(destination, animated: true)
-        }
-    }
-    
-    //Remove header of location-section
     override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        return section == 0 ? CGFloat.leastNonzeroMagnitude : 32
+        if section == TableSection.headerImage.rawValue || section == TableSection.information.rawValue {
+            return CGFloat.leastNonzeroMagnitude
+        }
+        return UITableView.automaticDimension
     }
-
-    //MARK - MapView Delegate Methods
-    //Change appearence of annotations according to Cafe.isFavorite
+    
+    //MARK: - MapView Delegate Methods
     func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
         guard let annotation = annotation as? Cafe.CafeAnnotation else { return nil }
         
@@ -128,7 +125,7 @@ class CafeDetailTableViewController: UITableViewController, MKMapViewDelegate {
             annotationView.canShowCallout = false
         }
         
-        if Cafe.isFavorite(cafeId: cafeId) {
+        if isFavorite {
             annotationView.markerTintColor = UIColor.angYellow
         } else {
             annotationView.markerTintColor = UIColor.angBlue
@@ -151,14 +148,51 @@ class CafeDetailTableViewController: UITableViewController, MKMapViewDelegate {
                 self.present(alert, animated: true)
             case .success(let cafe):
                 self.cafe = cafe
+                self.isFavorite = Cafe.isFavorite(cafeId: cafe.recordId)
                 
+                if let headerImage = cafe.headerImage {
+                    self.headerImageView.image = headerImage
+                    self.headerImageView.alpha = 1
+                }
+                
+                self.informationLabel.text = cafe.information
                 for cafeAnnotation in cafe.cafeAnnotations {
                     self.cafeAnnotations.append(cafeAnnotation)
                 }
                 
+                self.cafeLocationsLabel.attributedText = cafe.returnAddressAsAttributedString()
+                
                 self.cafeLocationsMap.addAnnotations(self.cafeAnnotations)
                 self.cafeLocationsMap.centerAround(self.cafeAnnotations)
+                
+                self.tableView.beginUpdates()
+                self.tableView.endUpdates()
             }
         }
+    }
+    
+    //MARK: - Actions
+    @IBAction func saveFavoriteButtonTouchUpInside(_ sender: UIButton) {
+        isFavorite = !isFavorite
+        
+        if isFavorite {
+            cafe!.saveLocallyAsFavoriteCafe()
+        } else {
+            cafe!.deleteLocallyAsFavoriteCafe()
+        }
+        
+        cafeLocationsMap.removeAnnotations(cafeAnnotations)
+        cafeLocationsMap.addAnnotations(cafeAnnotations)
+    }
+}
+
+extension CafeDetailTableViewController {
+    
+    enum TableSection: Int {
+        case headerImage = 0
+        case information
+        case location
+        case activities
+        case actions
     }
 }
