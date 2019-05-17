@@ -14,7 +14,7 @@ extension MKMapView {
     /**
      Automatically center map around input-locations.
     */
-    func centerAround(_ annotations: [MKAnnotation]) {
+    func centerAround(_ annotations: [MKAnnotation], animated: Bool) {
         var region = MKCoordinateRegion()
         
         //Check if there are annotations, otherwise center around HQ
@@ -63,6 +63,6 @@ extension MKMapView {
         }
         
         region.span = regionSpan
-        self.setRegion(region, animated: true)
+        self.setRegion(region, animated: animated)
     }
 }

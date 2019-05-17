@@ -6,6 +6,7 @@
 //  Copyright © 2019 Gerjan te Velde. All rights reserved.
 //
 
+import UIKit
 import Foundation
 import CloudKit
 
@@ -41,25 +42,55 @@ extension CloudKitService {
             }
         }
     }
+    
+    func fetchRegions(byIds regionIds: [Region.RecordId], completionHandler: @escaping ((Result<[Region], Error>) -> Void)) {
+        let regionRecordIds = regionIds.map() { $0.recordId }
+        var regions = [Region]()
+        
+        let fetchRegionsOperation = CKFetchRecordsOperation(recordIDs: regionRecordIds)
+        
+        fetchRegionsOperation.perRecordCompletionBlock = { (record, _, error) in
+            guard error == nil else {
+                return
+            }
+            let newRegion = Region(record: record!)
+            regions.append(newRegion)
+        }
+        
+        fetchRegionsOperation.fetchRecordsCompletionBlock = { (_, error) in
+            DispatchQueue.main.async {
+                guard error == nil else {
+                    completionHandler(.failure(error!))
+                    return
+                }
+                completionHandler(.success(regions))
+            }
+        }
+        
+        DispatchQueue.global().async {
+            self.publicDatabase.add(fetchRegionsOperation)
+        }
+    }
 }
 
 //MARK: - Cafe Methods
 extension CloudKitService {
     /**
-     A method to be used when only basic details of all cafes are needed.
+     A method to be used when only basic details of all cafes are needed, e.g. for a map.
      - Parameters:
         - completionHandler: The block to execute with the search results.
      
-     Uses the core API to fetch basic details only: name, region, and locations. This information can be shown on a map.
+     Uses the core API to fetch basic details only: name and locations. This information can be shown on a map.
     */
-    func fetchAllCafesBasicDetails(completionHandler: @escaping ((Result<[Cafe], Error>) -> Void)) {
+    func fetchAllCafesBasics(completionHandler: @escaping ((Result<[Cafe], Error>) -> Void)) {
         let predicate = NSPredicate(value: true)
         let cafeQuery = CKQuery(recordType: Cafe.keys.recordType, predicate: predicate)
         let sortDescriptors = NSSortDescriptor(key: Cafe.keys.name, ascending: true)
         cafeQuery.sortDescriptors = [sortDescriptors]
         
         let cafeQueryOperation = CKQueryOperation(query: cafeQuery)
-        cafeQueryOperation.desiredKeys = [Cafe.keys.name, Cafe.keys.region, Cafe.keys.locations]
+        cafeQueryOperation.qualityOfService = .userInitiated
+        cafeQueryOperation.desiredKeys = [Cafe.keys.name, Cafe.keys.locations]
         
         var fetchedCafes = [Cafe]()
         
@@ -86,26 +117,181 @@ extension CloudKitService {
     }
     
     /**
-     A method to fetch all details of a selected cafe, including eventual assets.
+     Metod to fetch to fetch basic details only of cafes in the specified regions.
     */
-    func fetchCafe(cafeId: Cafe.RecordId, completionHandler: @escaping ((Result<Cafe, Error>) -> Void)) {
-        publicDatabase.fetch(withRecordID: cafeId.recordId) { (record, error) in
-            if let error = error {
-                guard let ckError = error as? CKError else {
-                    DispatchQueue.main.async {
-                        completionHandler(.failure(error))
-                    }
-                    return
-                }
+    func fetchCafesBasicsInRegions(_ regionIds: [Region.RecordId], completionHandler: @escaping ((Result<[Cafe], Error>) -> Void)) {
+        
+        let regionRecordIds = regionIds.map() { CKRecord.Reference(recordID: $0.recordId, action: .none) }
+        
+        let predicate = NSPredicate(format: "\(Cafe.keys.region) IN %@", argumentArray: [regionRecordIds])
+        let query = CKQuery(recordType: Cafe.keys.recordType, predicate: predicate)
+        
+        let sort = NSSortDescriptor(key: Cafe.keys.name, ascending: true)
+        query.sortDescriptors = [sort]
+        
+        let fetchCafesOperation = CKQueryOperation(query: query)
+        fetchCafesOperation.desiredKeys = [Cafe.keys.name, Cafe.keys.region]
+        
+        var cafes = [Cafe]()
+        
+        fetchCafesOperation.recordFetchedBlock = { (record) in
+            let newCafe = Cafe(record: record)
+            cafes.append(newCafe)
+        }
+        
+        fetchCafesOperation.queryCompletionBlock = { (_, error) in
+            guard error == nil else {
                 DispatchQueue.main.async {
-                    completionHandler(.failure(ckError))
+                    completionHandler(.failure(error!))
                 }
-            } else {
-                let cafe = Cafe(record: record!)
-                DispatchQueue.main.async {
+                return
+            }
+            DispatchQueue.main.async {
+                completionHandler(.success(cafes))
+            }
+        }
+        
+        DispatchQueue.global().async {
+            self.publicDatabase.add(fetchCafesOperation)
+        }
+    }
+    
+    /**
+     A method to fetch details of a selected cafe, excluding eventual assets and region.
+    */
+    func fetchCafe(_ cafeId: Cafe.RecordId, completionHandler: @escaping ((Result<Cafe, Error>) -> Void)) {
+        
+        let fetchCafeOperation = CKFetchRecordsOperation(recordIDs: [cafeId.recordId])
+        fetchCafeOperation.desiredKeys = [
+            Cafe.keys.name,
+            Cafe.keys.information,
+            Cafe.keys.locations
+        ]
+        fetchCafeOperation.qualityOfService = .userInitiated
+        
+        var cafe: Cafe!
+        
+        fetchCafeOperation.perRecordCompletionBlock = { (record, recordId, error) in
+            guard error == nil else { return }
+            cafe = Cafe(record: record!)
+        }
+        
+        fetchCafeOperation.fetchRecordsCompletionBlock = { (_, error) in
+            DispatchQueue.main.async {
+                if let error = error {
+                    completionHandler(.failure(error))
+                } else {
                     completionHandler(.success(cafe))
                 }
             }
+        }
+        
+        DispatchQueue.global().async {
+            self.publicDatabase.add(fetchCafeOperation)
+        }
+    }
+    
+    func fetchCafeAssets(cafeId: Cafe.RecordId, completionHandler: @escaping ((Result<UIImage?, Error>) -> Void)) {
+        let fetchOperation = CKFetchRecordsOperation(recordIDs: [cafeId.recordId])
+        fetchOperation.desiredKeys = [Cafe.keys.headerImage]
+        fetchOperation.qualityOfService = .userInitiated
+        
+        var image: UIImage?
+        
+        fetchOperation.perRecordCompletionBlock = { (record, recordId, error) in
+            guard error == nil else { return }
+            let cafe = Cafe(record: record!)
+            image = cafe.headerImage
+        }
+        
+        fetchOperation.fetchRecordsCompletionBlock = { (result, error) in
+            DispatchQueue.main.async {
+                if let error = error {
+                    completionHandler(.failure(error))
+                } else {
+                    completionHandler(.success(image))
+                }
+            }
+        }
+        
+        DispatchQueue.global().async {
+            self.publicDatabase.add(fetchOperation)
+        }
+    }
+}
+
+//MARK: - Location Methods
+extension CloudKitService {
+    /**
+     A method to fetch full details of locations.
+    */
+    func fetchLocationsDetails(withLocationIds locationIds: [Location.RecordId], completionHandler: @escaping ((Result<[Location], Error>) -> Void)) {
+        
+        var locationRecordIds = [CKRecord.ID]()
+        for id in locationIds {
+            locationRecordIds.append(id.recordId)
+        }
+        
+        var locations = [Location]()
+        
+        let fetchLocationsOperation = CKFetchRecordsOperation(recordIDs: locationRecordIds)
+        fetchLocationsOperation.qualityOfService = .userInitiated
+        
+        fetchLocationsOperation.perRecordCompletionBlock = { (record, recordId, error) in
+            guard error == nil else { return }
+            let newLocation = Location(record: record!)
+            locations.append(newLocation)
+        }
+        
+        fetchLocationsOperation.fetchRecordsCompletionBlock = { (_, error) in
+            DispatchQueue.main.async {
+                if let error = error {
+                    completionHandler(.failure(error))
+                } else {
+                    completionHandler(.success(locations))
+                }
+            }
+        }
+        
+        DispatchQueue.global().async {
+            self.publicDatabase.add(fetchLocationsOperation)
+        }
+    }
+    
+    /**
+     This methods fetches the coordinates only of locations to be shown on a map.
+    */
+    func fetchLocationsBasics(withLocationIds locationIds: [Location.RecordId], completionHandler: @escaping ((Result<[Location], Error>) -> Void)) {
+        
+        var locationRecordIds = [CKRecord.ID]()
+        for id in locationIds {
+            locationRecordIds.append(id.recordId)
+        }
+        
+        var locations = [Location]()
+        
+        let fetchLocationsOperation = CKFetchRecordsOperation(recordIDs: locationRecordIds)
+        fetchLocationsOperation.desiredKeys = [Location.keys.coordinate]
+        fetchLocationsOperation.qualityOfService = .userInitiated
+        
+        fetchLocationsOperation.perRecordCompletionBlock = { (record, recordId, error) in
+            guard error == nil else { return }
+            let newLocation = Location(record: record!)
+            locations.append(newLocation)
+        }
+        
+        fetchLocationsOperation.fetchRecordsCompletionBlock = { (_, error) in
+            DispatchQueue.main.async {
+                if let error = error {
+                    completionHandler(.failure(error))
+                } else {
+                    completionHandler(.success(locations))
+                }
+            }
+        }
+        
+        DispatchQueue.global().async {
+            self.publicDatabase.add(fetchLocationsOperation)
         }
     }
 }

@@ -13,8 +13,12 @@ class CafeDetailTableViewController: UITableViewController, MKMapViewDelegate {
     
     //MARK: Properties
     var cafeId: Cafe.RecordId!
-    var cafe: Cafe?
-    var cafeAnnotations = [Cafe.CafeAnnotation]()
+    var cafe: Cafe! {
+        didSet {
+            loadLocations()
+        }
+    }
+    var cafeAnnotations = [Location.Annotation]()
     
     var isFavorite = false {
         didSet {
@@ -41,15 +45,7 @@ class CafeDetailTableViewController: UITableViewController, MKMapViewDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        headerImageView.alpha = 0
-        
-        cafeLocationsMap.delegate = self
-        cafeLocationsMap.isZoomEnabled = false
-        cafeLocationsMap.isPitchEnabled = false
-        cafeLocationsMap.isRotateEnabled = false
-        cafeLocationsMap.isScrollEnabled = false
-        cafeLocationsMap.isUserInteractionEnabled = false
-        
+        setMap()
         loadCafe()
         
         /*
@@ -92,11 +88,7 @@ class CafeDetailTableViewController: UITableViewController, MKMapViewDelegate {
     //MARK: - Table View Delegate Methods
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         if indexPath.section == TableSection.headerImage.rawValue && indexPath.row == 0 {
-            if cafe?.headerImage != nil {
-                return view.bounds.height / 4
-            } else {
-                return CGFloat.leastNonzeroMagnitude
-            }
+            return view.bounds.height / 4
         } else if indexPath.section == TableSection.location.rawValue && indexPath.row == 0 {
             return view.bounds.height / 4
         }
@@ -110,9 +102,16 @@ class CafeDetailTableViewController: UITableViewController, MKMapViewDelegate {
         return UITableView.automaticDimension
     }
     
+    override func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
+        if section == TableSection.headerImage.rawValue {
+            return CGFloat.leastNonzeroMagnitude
+        }
+        return UITableView.automaticDimension
+    }
+    
     //MARK: - MapView Delegate Methods
     func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
-        guard let annotation = annotation as? Cafe.CafeAnnotation else { return nil }
+        guard let annotation = annotation as? Location.Annotation else { return nil }
         
         let identifier = "cafe"
         var annotationView: MKMarkerAnnotationView
@@ -138,7 +137,7 @@ class CafeDetailTableViewController: UITableViewController, MKMapViewDelegate {
     func loadCafe() {
         UIApplication.shared.isNetworkActivityIndicatorVisible = true
         
-        cloudKitService.fetchCafe(cafeId: cafeId) { [unowned self] (result) in
+        cloudKitService.fetchCafe(cafeId) { [unowned self] (result) in
             UIApplication.shared.isNetworkActivityIndicatorVisible = false
             
             switch result {
@@ -150,25 +149,77 @@ class CafeDetailTableViewController: UITableViewController, MKMapViewDelegate {
                 self.cafe = cafe
                 self.isFavorite = Cafe.isFavorite(cafeId: cafe.recordId)
                 
-                if let headerImage = cafe.headerImage {
-                    self.headerImageView.image = headerImage
-                    self.headerImageView.alpha = 1
-                }
-                
                 self.informationLabel.text = cafe.information
-                for cafeAnnotation in cafe.cafeAnnotations {
-                    self.cafeAnnotations.append(cafeAnnotation)
-                }
-                
-                self.cafeLocationsLabel.attributedText = cafe.returnAddressAsAttributedString()
-                
-                self.cafeLocationsMap.addAnnotations(self.cafeAnnotations)
-                self.cafeLocationsMap.centerAround(self.cafeAnnotations)
                 
                 self.tableView.beginUpdates()
                 self.tableView.endUpdates()
             }
         }
+    }
+    
+    func loadLocations() {
+        UIApplication.shared.isNetworkActivityIndicatorVisible = true
+        cloudKitService.fetchLocationsDetails(withLocationIds: cafe.locations) { [unowned self] (result) in
+            UIApplication.shared.isNetworkActivityIndicatorVisible = false
+            self.loadHeaderImage()
+            switch result {
+            case .failure(let error):
+                let alert = UIAlertController(title: "Kon  locaties niet laden", message: error.localizedDescription, preferredStyle: .alert)
+                alert.addAction(UIAlertAction(title: "Oké", style: .default))
+                self.present(alert, animated: true)
+            case .success(let locations):
+                for location in locations {
+                    let newAnnotation = Location.Annotation(withLocationName: location.name, cafeId: self.cafe.recordId, coordinate: location.coordinate)
+                    self.cafeAnnotations.append(newAnnotation)
+                }
+                
+                self.cafeLocationsMap.addAnnotations(self.cafeAnnotations)
+                self.cafeLocationsMap.centerAround(self.cafeAnnotations, animated: false)
+                
+                if self.cafeAnnotations.isEmpty {
+                    self.cafeLocationsLabel.text = "Er zijn geen adresgegevens beschikbaar."
+                } else {
+                    self.cafeLocationsLabel.attributedText = Location.returnAddressesAsAtributedString(ofLocations: locations)
+                }
+                
+                self.tableView.beginUpdates()
+                self.tableView.endUpdates()
+            }
+        }
+    }
+    
+    func loadHeaderImage() {
+        UIApplication.shared.isNetworkActivityIndicatorVisible = true
+        cloudKitService.fetchCafeAssets(cafeId: cafe.recordId) { (result) in
+            UIApplication.shared.isNetworkActivityIndicatorVisible = false
+            switch result {
+            case .failure(let error):
+                let alert = UIAlertController(title: "Kon afbeelding niet laden", message: error.localizedDescription, preferredStyle: .alert)
+                alert.addAction(UIAlertAction(title: "Oké", style: .default))
+                self.present(alert, animated: true)
+            case .success(let image):
+                if let headerImage = image {
+                    UIView.animate(withDuration: 0.5, animations: {
+                        self.headerImageView.alpha = 0
+                    }, completion: { (_) in
+                        self.headerImageView.contentMode = .scaleAspectFill
+                        self.headerImageView.image = headerImage
+                        UIView.animate(withDuration: 0.5, animations: {
+                            self.headerImageView.alpha = 1
+                        })
+                    })
+                }
+            }
+        }
+    }
+    
+    func setMap() {
+        cafeLocationsMap.delegate = self
+        cafeLocationsMap.isZoomEnabled = false
+        cafeLocationsMap.isPitchEnabled = false
+        cafeLocationsMap.isRotateEnabled = false
+        cafeLocationsMap.isScrollEnabled = false
+        cafeLocationsMap.isUserInteractionEnabled = false
     }
     
     //MARK: - Actions

@@ -16,7 +16,11 @@ class CafeMapViewController: UIViewController, MKMapViewDelegate {
     var cloudKitService = CloudKitService.default
     
     var cafes = [Cafe]()
-    var cafeAnnotations = [Cafe.CafeAnnotation]()
+    var locationIds = [Location.RecordId]()
+    var locations = [Location]()
+    var locationAnnotations = [Location.Annotation]()
+    
+    var selectedCafeId: Cafe.RecordId?
     
     //MARK: - View Controller Life Cycle
     override func viewDidLoad() {
@@ -25,12 +29,30 @@ class CafeMapViewController: UIViewController, MKMapViewDelegate {
         cafesMap.delegate = self
         loadAllCafes()
     }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        print("CafeMap: viewWillAppear() called.")
+        
+        let favoriteCafes = (Cafe.loadLocallyStoredFavoriteCafesById().keys).map() { $0.recordId }
+        var favoriteAnnotations = [Location.Annotation]()
+        
+        for annotation in locationAnnotations {
+            if favoriteCafes.contains(annotation.cafeId!.recordId) {
+                favoriteAnnotations.append(annotation)
+            }
+        }
+        
+        cafesMap.removeAnnotations(favoriteAnnotations)
+        cafesMap.addAnnotations(favoriteAnnotations)
+    }
 
     //MARK: - Methods
     func loadAllCafes() {
         UIApplication.shared.isNetworkActivityIndicatorVisible = true
         
-        cloudKitService.fetchAllCafesBasicDetails { [unowned self] (result) in
+        cloudKitService.fetchAllCafesBasics { [unowned self] (result) in
             UIApplication.shared.isNetworkActivityIndicatorVisible = false
             
             switch result {
@@ -42,22 +64,51 @@ class CafeMapViewController: UIViewController, MKMapViewDelegate {
                 self.cafes = resultCafes
                 
                 for cafe in resultCafes {
-                    for cafeAnnotation in cafe.cafeAnnotations {
-                        self.cafeAnnotations.append(cafeAnnotation)
-                    }
+                    self.locationIds += cafe.locations
                 }
-                
-                self.cafesMap.addAnnotations(self.cafeAnnotations)
-                self.cafesMap.centerAround(self.cafeAnnotations)
+                self.loadLocations()
             }
         }
+    }
+    
+    func loadLocations() {
+        UIApplication.shared.isNetworkActivityIndicatorVisible = true
+        
+        cloudKitService.fetchLocationsBasics(withLocationIds: locationIds) { [unowned self] (result) in
+            UIApplication.shared.isNetworkActivityIndicatorVisible = false
+            switch result {
+            case .failure(let error):
+                let alert = UIAlertController(title: "Kon locaties niet laden", message: error.localizedDescription, preferredStyle: .alert)
+                alert.addAction(UIAlertAction(title: "Oké", style: .default))
+                self.present(alert, animated: true)
+            case .success(let resultLocations):
+                self.locations = resultLocations
+                self.createAnnotations()
+            }
+        }
+    }
+    
+    func createAnnotations() {
+        for cafe in cafes {
+            for locationId in cafe.locations {
+                let cafeLocations = locations.filter { $0.recordId == locationId }
+                
+                for cafeLocation in cafeLocations {
+                    let newAnnotation = Location.Annotation(withCafeName: cafe.name, cafeId: cafe.recordId, coordinate: cafeLocation.coordinate)
+                    locationAnnotations.append(newAnnotation)
+                }
+            }
+        }
+        
+        cafesMap.addAnnotations(locationAnnotations)
+        cafesMap.centerAround(locationAnnotations, animated: true)
     }
     
     //MARK: - Segue
      override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "CafeDetailSegue" {
             let destinationVC = segue.destination as! CafeDetailTableViewController
-            guard let selectedCafe = (sender as? MKAnnotationView)?.annotation as? Cafe.CafeAnnotation else { return }
+            guard let selectedCafe = (sender as? MKAnnotationView)?.annotation as? Location.Annotation else { return }
             destinationVC.cafeId = selectedCafe.cafeId
             destinationVC.title = selectedCafe.title!
         }
@@ -65,7 +116,7 @@ class CafeMapViewController: UIViewController, MKMapViewDelegate {
 
     //MARK: - MapView Delegate Methods
     func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
-        guard let annotation = annotation as? Cafe.CafeAnnotation else { return nil }
+        guard let annotation = annotation as? Location.Annotation else { return nil }
         
         let identifier = "cafe"
         var annotationView: MKMarkerAnnotationView
@@ -79,13 +130,19 @@ class CafeMapViewController: UIViewController, MKMapViewDelegate {
             annotationView.rightCalloutAccessoryView = UIButton(type: .detailDisclosure)
         }
         
-        if Cafe.isFavorite(cafeId: annotation.cafeId) {
+        if Cafe.isFavorite(cafeId: annotation.cafeId!) {
             annotationView.markerTintColor = UIColor.angYellow
         } else {
             annotationView.markerTintColor = UIColor.angBlue
         }
 
         return annotationView
+    }
+    
+    func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {
+        if let selectedCafeId = view.annotation as? Location.Annotation {
+            self.selectedCafeId = selectedCafeId.cafeId
+        }
     }
     
     func mapView(_ mapView: MKMapView, annotationView view: MKAnnotationView, calloutAccessoryControlTapped control: UIControl) {

@@ -15,11 +15,9 @@ struct Cafe {
     
     static let keys =
         (
-            title: "title",
             name: "name",
             region: "region",
             locations: "locations",
-            addresses: "addresses",
             information: "information",
             headerImage: "headerImage",
             favoriteCafesById: "FavoriteCafesById",
@@ -51,8 +49,8 @@ struct Cafe {
     
     var region: Region.RecordId {
         get {
-            let regionId = record.value(forKey: Cafe.keys.region) as! CKRecord.ID
-            return Region.RecordId(recordId: regionId)
+            let regionReference = record.value(forKey: Cafe.keys.region) as! CKRecord.Reference
+            return Region.RecordId(recordId: regionReference.recordID)
         }
         set {
             let reference = CKRecord.Reference(recordID: newValue.recordId, action: .deleteSelf)
@@ -60,23 +58,19 @@ struct Cafe {
         }
     }
     
-    var locations: [CLLocation] {
+    var locations: [Location.RecordId] {
         get {
-            return record.value(forKey: Cafe.keys.locations) as! [CLLocation]
+            let locationReferences = record.value(forKey: Cafe.keys.locations) as? [CKRecord.Reference] ?? [CKRecord.Reference]()
+            
+            var locationIds = [Location.RecordId]()
+            for reference in locationReferences {
+                locationIds.append(Location.RecordId(recordId: reference.recordID))
+            }
+            return locationIds
         }
-        set {
-            record.setValue(newValue, forKey: Cafe.keys.locations)
-        }
+        //TODO: Implement 'set' for locations.
     }
     
-    var addresses: [String] {
-        get {
-            return record.value(forKey: Cafe.keys.addresses) as? [String] ?? [String]()
-        }
-        set {
-            record.setValue(newValue, forKey: Cafe.keys.addresses)
-        }
-    }
     
     var information: String {
         get {
@@ -93,7 +87,7 @@ struct Cafe {
             guard let data = try? Data(contentsOf: headerImageUrl) else { return nil }
             return UIImage(data: data)
         }
-        //TODO: implement 'set' for headerImage.
+        //TODO: Implement 'set' for headerImage.
     }
 }
 
@@ -108,60 +102,7 @@ extension Cafe: Comparable {
 }
 
 extension Cafe {
-    func returnAddressAsAttributedString() -> NSAttributedString {
-        guard !addresses.isEmpty else {
-            return NSAttributedString(string: "Er zijn geen adresgegevens beschikbaar.")
-        }
-        
-        let addressAttributedString = NSMutableAttributedString(string: "")
-        
-        for (index, address) in addresses.enumerated() {
-            let addressAsNSString = address as NSString
-            let lineBreakRange = addressAsNSString.range(of: "\n")
-            let boldRange: NSRange = NSRange(location: 0, length: lineBreakRange.location)
-            
-            let attributedAddress = NSMutableAttributedString(string: address)
-            let attribute = [NSAttributedString.Key.font: UIFont.boldSystemFont(ofSize: 17)]
-            attributedAddress.addAttributes(attribute, range: boldRange)
-            addressAttributedString.append(attributedAddress)
-            
-            if index != (addresses.endIndex - 1) {
-               addressAttributedString.append(NSAttributedString(string: "\n\n"))
-            }
-        }
-        
-        return NSAttributedString(attributedString: addressAttributedString)
-    }
-}
-
-extension Cafe {
-    var cafeAnnotations: [CafeAnnotation] {
-        var cafeAnnotations = [CafeAnnotation]()
-        
-        for  location in locations {
-            let newCafeAnnotation = CafeAnnotation(cafeId: self.recordId, name: self.name, location: location)
-            cafeAnnotations.append(newCafeAnnotation)
-        }
-        
-        return cafeAnnotations
-    }
-    
-    class CafeAnnotation: NSObject, MKAnnotation {
-        
-        var cafeId: Cafe.RecordId
-        var title: String?
-        var coordinate: CLLocationCoordinate2D
-        
-        init(cafeId: Cafe.RecordId, name: String, location: CLLocation) {
-            self.cafeId = cafeId
-            self.title = name
-            self.coordinate = location.coordinate
-        }
-    }
-}
-
-extension Cafe {
-    private static func loadLocallyStoredFavoriteCafesById() -> [Cafe.RecordId: String] {
+    static func loadLocallyStoredFavoriteCafesById() -> [Cafe.RecordId: String] {
         let userDefaults = UserDefaults.standard
         
         if let favoriteCafes = userDefaults.object(forKey: Cafe.keys.favoriteCafesById) as? [String: String] {
