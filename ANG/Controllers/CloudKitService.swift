@@ -117,7 +117,39 @@ extension CloudKitService {
     }
     
     /**
-     Metod to fetch to fetch basic details only of cafes in the specified regions.
+     Method to fetch basic details (name and region) of specified cafés.
+    */
+    func fetchCafesBasics(cafeIds: [Cafe.RecordId], completionHandler: @escaping ((Result<[Cafe], Error>) -> Void)) {
+        
+        let cafeRecordIds = cafeIds.map() { $0.recordId }
+        let cafeOperation = CKFetchRecordsOperation(recordIDs: cafeRecordIds)
+        cafeOperation.desiredKeys = [Cafe.keys.name, Cafe.keys.region]
+        
+        var favoriteCafes = [Cafe]()
+        
+        cafeOperation.perRecordCompletionBlock = { (record, id, error) in
+            guard error == nil else { return }
+            let newCafe = Cafe(record: record!)
+            favoriteCafes.append(newCafe)
+        }
+        
+        cafeOperation.fetchRecordsCompletionBlock = { (_, error) in
+            DispatchQueue.main.async {
+                guard error == nil else {
+                    completionHandler(.failure(error!))
+                    return
+                }
+                completionHandler(.success(favoriteCafes))
+            }
+        }
+        
+        DispatchQueue.global().async {
+            self.publicDatabase.add(cafeOperation)
+        }
+    }
+    
+    /**
+     Metod to fetch basic details only of cafes in the specified regions.
     */
     func fetchCafesBasicsInRegions(_ regionIds: [Region.RecordId], completionHandler: @escaping ((Result<[Cafe], Error>) -> Void)) {
         

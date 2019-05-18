@@ -27,20 +27,10 @@ class SettingsTableViewController: UITableViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
-        favoriteRegionLabel.text = Region.returnLocallyFavoriteRegionsAsString()
+        favoriteRegionLabel.text = Region.returnFavoritesAsString()
+        favoriteCafeLabel.text = Cafe.returnFavoritesAsString()
         
         tableView.beginUpdates()
         tableView.endUpdates()
-    }
-    
-    //MARK: - Segues
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if segue.identifier == "ShowFavoriteRegionsSegue" {
-            let destination = segue.destination as! SelectFavoritesTableViewController
-            destination.favorite = .region
-        } else if segue.identifier == "ShowFavoriteCafesSegue" {
-            let destination = segue.destination as! SelectFavoritesTableViewController
-            destination.favorite = .cafe
-        }
     }
 }

@@ -33,19 +33,8 @@ class CafeMapViewController: UIViewController, MKMapViewDelegate {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
-        print("CafeMap: viewWillAppear() called.")
-        
-        let favoriteCafes = (Cafe.loadLocallyStoredFavoriteCafesById().keys).map() { $0.recordId }
-        var favoriteAnnotations = [Location.Annotation]()
-        
-        for annotation in locationAnnotations {
-            if favoriteCafes.contains(annotation.cafeId!.recordId) {
-                favoriteAnnotations.append(annotation)
-            }
-        }
-        
-        cafesMap.removeAnnotations(favoriteAnnotations)
-        cafesMap.addAnnotations(favoriteAnnotations)
+        cafesMap.removeAnnotations(locationAnnotations)
+        cafesMap.addAnnotations(locationAnnotations)
     }
 
     //MARK: - Methods

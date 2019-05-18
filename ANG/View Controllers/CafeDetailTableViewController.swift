@@ -45,6 +45,8 @@ class CafeDetailTableViewController: UITableViewController, MKMapViewDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        
+        saveFavoriteButton.isEnabled = false
         setMap()
         loadCafe()
         
@@ -146,6 +148,7 @@ class CafeDetailTableViewController: UITableViewController, MKMapViewDelegate {
                 alert.addAction(UIAlertAction(title: "Oké", style: .default))
                 self.present(alert, animated: true)
             case .success(let cafe):
+                self.saveFavoriteButton.isEnabled = true
                 self.cafe = cafe
                 self.isFavorite = Cafe.isFavorite(cafeId: cafe.recordId)
                 
@@ -227,9 +230,9 @@ class CafeDetailTableViewController: UITableViewController, MKMapViewDelegate {
         isFavorite = !isFavorite
         
         if isFavorite {
-            cafe!.saveLocallyAsFavoriteCafe()
+            cafe!.saveAsFavorite()
         } else {
-            cafe!.deleteLocallyAsFavoriteCafe()
+            cafe!.deleteAsFavorite()
         }
         
         cafeLocationsMap.removeAnnotations(cafeAnnotations)

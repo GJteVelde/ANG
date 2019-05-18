@@ -298,7 +298,7 @@
                         <sections>
                             <tableViewSection headerTitle="Favoriete afdelingen" footerTitle="Voor uw favoriete afdelingen zijn de gegevens altijd beschikbaar, ook wanneer u even niet verbonden bent met het internet." id="gwF-8r-jsX">
                                 <cells>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" accessoryType="disclosureIndicator" indentationWidth="10" reuseIdentifier="SettingsCell" textLabel="rdz-xP-qtU" style="IBUITableViewCellStyleDefault" id="sER-jY-7Nh">
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" accessoryType="disclosureIndicator" indentationWidth="10" textLabel="rdz-xP-qtU" style="IBUITableViewCellStyleDefault" id="sER-jY-7Nh">
                                         <rect key="frame" x="0.0" y="55.5" width="375" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="sER-jY-7Nh" id="rh3-Vu-ZDV">
@@ -322,7 +322,7 @@
                             </tableViewSection>
                             <tableViewSection headerTitle="Favoriete cafés" footerTitle="Voor uw favoriete cafés ontvangt u, indien ingeschakeld, meldingen wanneer activiteiten worden toegevoegd." id="QFk-f9-cQy">
                                 <cells>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" accessoryType="disclosureIndicator" indentationWidth="10" reuseIdentifier="SettingsCell" textLabel="Sf5-5Y-BuL" style="IBUITableViewCellStyleDefault" id="3dA-AG-xJ4">
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" accessoryType="disclosureIndicator" indentationWidth="10" textLabel="Sf5-5Y-BuL" style="IBUITableViewCellStyleDefault" id="3dA-AG-xJ4">
                                         <rect key="frame" x="0.0" y="207" width="375" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="3dA-AG-xJ4" id="1aH-ny-n9X">
@@ -339,7 +339,7 @@
                                             </subviews>
                                         </tableViewCellContentView>
                                         <connections>
-                                            <segue destination="CBc-RU-vgW" kind="show" identifier="ShowFavoriteCafesSegue" id="goE-48-XPS"/>
+                                            <segue destination="0EZ-Ob-D3b" kind="show" identifier="ShowFavoriteCafesSegue" id="lLo-dU-Dkz"/>
                                         </connections>
                                     </tableViewCell>
                                 </cells>
@@ -358,12 +358,12 @@
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="rGg-i4-7jA" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1993" y="1684"/>
+            <point key="canvasLocation" x="1236" y="1988"/>
         </scene>
         <!--Favoriete afdelingen-->
         <scene sceneID="86z-RK-X0o">
             <objects>
-                <tableViewController title="Favoriete afdelingen" id="CBc-RU-vgW" customClass="SelectFavoritesTableViewController" customModule="ANG" customModuleProvider="target" sceneMemberID="viewController">
+                <tableViewController title="Favoriete afdelingen" id="CBc-RU-vgW" customClass="SelectFavoriteRegionsTableViewController" customModule="ANG" customModuleProvider="target" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="grouped" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="18" sectionFooterHeight="18" id="uTf-Xa-wly">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -386,7 +386,44 @@
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="hvX-hw-sAY" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2761" y="1684"/>
+            <point key="canvasLocation" x="1993" y="1988"/>
+        </scene>
+        <!--Select Favorite Cafes Table View Controller-->
+        <scene sceneID="iI9-WC-hIC">
+            <objects>
+                <tableViewController id="0EZ-Ob-D3b" customClass="SelectFavoriteCafesTableViewController" customModule="ANG" customModuleProvider="target" sceneMemberID="viewController">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="grouped" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="18" sectionFooterHeight="18" id="uvt-nX-LAo">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
+                        <prototypes>
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="CafeCell" textLabel="HKG-Vp-FMR" style="IBUITableViewCellStyleDefault" id="82M-e7-Ioc">
+                                <rect key="frame" x="0.0" y="55.5" width="375" height="44"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="82M-e7-Ioc" id="SJl-IX-j2G">
+                                    <rect key="frame" x="0.0" y="0.0" width="375" height="43.5"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                    <subviews>
+                                        <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" insetsLayoutMarginsFromSafeArea="NO" text="" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="HKG-Vp-FMR">
+                                            <rect key="frame" x="16" y="0.0" width="343" height="43.5"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                            <nil key="textColor"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                    </subviews>
+                                </tableViewCellContentView>
+                            </tableViewCell>
+                        </prototypes>
+                        <connections>
+                            <outlet property="dataSource" destination="0EZ-Ob-D3b" id="BNo-4P-ACH"/>
+                            <outlet property="delegate" destination="0EZ-Ob-D3b" id="iYd-K0-XME"/>
+                        </connections>
+                    </tableView>
+                </tableViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="S5S-H1-R3B" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1993" y="2761"/>
         </scene>
         <!--Activiteit-->
         <scene sceneID="2d5-3F-k4C">
@@ -492,13 +529,10 @@
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="yxP-Ey-B2Z" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1236" y="1683.5082458770617"/>
+            <point key="canvasLocation" x="446" y="1988"/>
         </scene>
     </scenes>
     <resources>
         <image name="Logo Alzheimer Nederland" width="376" height="465"/>
     </resources>
-    <inferredMetricsTieBreakers>
-        <segue reference="goE-48-XPS"/>
-    </inferredMetricsTieBreakers>
 </document>
