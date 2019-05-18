@@ -73,9 +73,9 @@ extension Region: Comparable, Equatable {
 extension Region {
     /**
      Loads favorite regions from UserDefaults and returns them as a dictionary.
-     - Returns: A dictionary where the key is the regionID name (*CKRecord.ID.recordName*) and its value is the name of the region.
+     - Returns: A dictionary where the key is the regionID name (*CKRecord.ID.recordName*) and its value is the stored name of the region.
     */
-    static func loadLocallyStoredFavoriteRegionsById() -> [Region.RecordId: String] {
+    static func loadFavorites() -> [Region.RecordId: String] {
         let userDefaults = UserDefaults.standard
         
         if let favoriteRegions = userDefaults.object(forKey: Region.keys.favoriteRegionsById) as? [String: String] {
@@ -97,7 +97,7 @@ extension Region {
      - Parameters:
         - regions: Takes a dictionary of type *[String: String]*. The key should be the regionID name (*CKRecord.ID.recordName*) and the value the name of the region.
     */
-    private static func saveLocallyFavoriteRegionsById(_ regions: [Region.RecordId: String]) {
+    private static func saveFavorites(regionIdsAndNames regions: [Region.RecordId: String]) {
         var saveableRegions = [String: String]()
         
         for region in regions {
@@ -109,54 +109,47 @@ extension Region {
         userDefaults.set(saveableRegions, forKey: Region.keys.favoriteRegionsById)
     }
     
-    static func returnLocallyFavoriteRegionsAsString() -> String {
-        let favoriteRegions = Region.loadLocallyStoredFavoriteRegionsById()
-        let favoriteRegionsByName = favoriteRegions.values.sorted()
-        
-        if favoriteRegionsByName.count == 0 {
-            return "Er is nog geen favoriete afdeling geselecteerd."
-        } else if favoriteRegionsByName.count == 1 {
-            return "Uw favoriete afdeling is \(favoriteRegionsByName.first!)."
-        } else {
-            var tempFavoriteRegionsByName = favoriteRegionsByName
-            let lastRegion = tempFavoriteRegionsByName.removeLast()
-            let favoriteRegionsString = tempFavoriteRegionsByName.joined(separator: ", ")
-            return "Uw favoriete afdelingen zijn \(favoriteRegionsString) en \(lastRegion)."
-        }
-    }
-    
-    func saveLocallyAsFavoriteRegion() {
-        var favoriteRegions = Region.loadLocallyStoredFavoriteRegionsById()
+    func saveAsFavorite() {
+        var favoriteRegions = Region.loadFavorites()
         
         favoriteRegions[self.recordId] = self.name
         
-        Region.saveLocallyFavoriteRegionsById(favoriteRegions)
+        Region.saveFavorites(regionIdsAndNames: favoriteRegions)
     }
     
-    func deleteLocallyAsFavoriteRegion() {
-        var favoriteRegions = Region.loadLocallyStoredFavoriteRegionsById()
+    func deleteAsFavorite() {
+        var favoriteRegions = Region.loadFavorites()
         
         favoriteRegions.removeValue(forKey: self.recordId)
         
-        Region.saveLocallyFavoriteRegionsById(favoriteRegions)
+        Region.saveFavorites(regionIdsAndNames: favoriteRegions)
     }
     
     /**
      Checks if the region is locally stored as a favorite region.
-     - Returns: A tuple (*favorite*, *name?*) where name may return a String if the name saved locally is different from the name on the server. If the local name and the name on the server are equal, or if the region is not saved locally as favorite, it name returns nil.
     */
-    func isLocallyFavoriteRegion() -> (isFavorite: Bool, localName: String?) {
-        var favoriteRegions = Region.loadLocallyStoredFavoriteRegionsById()
+    func isFavorite() -> Bool {
+        let favoriteRegions = Region.loadFavorites()
+        return favoriteRegions.keys.contains(self.recordId)
+    }
+}
+
+extension Region {
+    static func returnFavoritesAsString() -> String {
+        let favoriteRegions = Region.loadFavorites()
+        let favoriteRegionNames = favoriteRegions.values.sorted()
         
-        if let savedName = favoriteRegions[self.recordId] {
-            if savedName == self.name {
-                return (true, nil)
-            } else {
-                return (true, savedName)
-            }
+        switch favoriteRegionNames.count {
+        case 0:
+            return "Er is nog geen favoriete afdeling geselecteerd."
+        case 1:
+            return "Uw favoriete afdeling is \(favoriteRegionNames.first!)."
+        default:
+            var tempFavoriteRegionNames = favoriteRegionNames
+            let lastRegion = tempFavoriteRegionNames.removeLast()
+            let favoriteRegionString = tempFavoriteRegionNames.joined(separator: ", ")
+            return "Uw favoriete afdelingen zijn \(favoriteRegionString) en \(lastRegion)."
         }
-        
-        return (false, nil)
     }
 }
 

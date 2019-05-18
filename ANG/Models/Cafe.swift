@@ -102,7 +102,7 @@ extension Cafe: Comparable {
 }
 
 extension Cafe {
-    static func loadLocallyStoredFavoriteCafesById() -> [Cafe.RecordId: String] {
+    static func loadFavorites() -> [Cafe.RecordId: String] {
         let userDefaults = UserDefaults.standard
         
         if let favoriteCafes = userDefaults.object(forKey: Cafe.keys.favoriteCafesById) as? [String: String] {
@@ -119,7 +119,7 @@ extension Cafe {
         return [Cafe.RecordId: String]()
     }
 
-    private static func saveLocallyFavoriteCafesById(_ cafes: [Cafe.RecordId: String]) {
+    private static func saveFavorites(cafeIdsAndNames cafes: [Cafe.RecordId: String]) {
         var saveableCafes = [String: String]()
         
         for cafe in cafes {
@@ -131,32 +131,55 @@ extension Cafe {
         userDefaults.set(saveableCafes, forKey: Cafe.keys.favoriteCafesById)
     }
     
-    static func saveLocallyFavoriteCafe(byId cafeId: Cafe.RecordId, cafeName: String) {
-        var favoriteCafes = Cafe.loadLocallyStoredFavoriteCafesById()
+    static func saveFavorite(cafeId: Cafe.RecordId, cafeName: String) {
+        var favoriteCafes = Cafe.loadFavorites()
         
         favoriteCafes[cafeId] = cafeName
         
-        Cafe.saveLocallyFavoriteCafesById(favoriteCafes)
+        Cafe.saveFavorites(cafeIdsAndNames: favoriteCafes)
     }
     
-    static func deleteLocallyFavoriteCafe(byId cafeId: Cafe.RecordId) {
-        var favoriteCafes = Cafe.loadLocallyStoredFavoriteCafesById()
+    static func deleteFavorite(cafeId: Cafe.RecordId) {
+        var favoriteCafes = Cafe.loadFavorites()
         
         favoriteCafes.removeValue(forKey: cafeId)
         
-        Cafe.saveLocallyFavoriteCafesById(favoriteCafes)
+        Cafe.saveFavorites(cafeIdsAndNames: favoriteCafes)
     }
     
-    func saveLocallyAsFavoriteCafe() {
-        Cafe.saveLocallyFavoriteCafe(byId: self.recordId, cafeName: self.name)
+    func saveAsFavorite() {
+        Cafe.saveFavorite(cafeId: self.recordId, cafeName: self.name)
     }
     
-    func deleteLocallyAsFavoriteCafe() {
-        Cafe.deleteLocallyFavoriteCafe(byId: self.recordId)
+    func deleteAsFavorite() {
+        Cafe.deleteFavorite(cafeId: self.recordId)
+    }
+    
+    func isFavorite() -> Bool {
+        return Cafe.isFavorite(cafeId: self.recordId)
     }
     
     static func isFavorite(cafeId: Cafe.RecordId) -> Bool {
-        let favoriteCafes = Cafe.loadLocallyStoredFavoriteCafesById()
+        let favoriteCafes = Cafe.loadFavorites()
         return favoriteCafes.keys.contains(cafeId)
+    }
+}
+
+extension Cafe {
+    static func returnFavoritesAsString() -> String {
+        let favoriteCafes = Cafe.loadFavorites()
+        let favoriteCafeNames = favoriteCafes.values.sorted()
+        
+        switch favoriteCafeNames.count {
+        case 0:
+            return "Er is nog geen favoriet café geselecteerd."
+        case 1:
+            return "Uw favoriete café is \(favoriteCafeNames.first!)."
+        default:
+            var tempFavoriteCafeNames = favoriteCafeNames
+            let lastCafe = tempFavoriteCafeNames.removeLast()
+            let favoriteCafeString = tempFavoriteCafeNames.joined(separator: ", ")
+            return "Uw favoriete cafés zijn \(favoriteCafeString) en \(lastCafe)."
+        }
     }
 }
