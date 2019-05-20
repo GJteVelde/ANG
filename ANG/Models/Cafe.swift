@@ -174,12 +174,12 @@ extension Cafe {
         case 0:
             return "Er is nog geen favoriet café geselecteerd."
         case 1:
-            return "Uw favoriete café is \(favoriteCafeNames.first!)."
+            return "Mijn favoriete café is \(favoriteCafeNames.first!)."
         default:
             var tempFavoriteCafeNames = favoriteCafeNames
             let lastCafe = tempFavoriteCafeNames.removeLast()
             let favoriteCafeString = tempFavoriteCafeNames.joined(separator: ", ")
-            return "Uw favoriete cafés zijn \(favoriteCafeString) en \(lastCafe)."
+            return "Mijn favoriete cafés zijn \(favoriteCafeString) en \(lastCafe)."
         }
     }
 }

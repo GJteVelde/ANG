@@ -41,5 +41,7 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Vind eenvoudig Alzheimer Cafés en activiteiten bij u in de buurt.</string>
 </dict>
 </plist>

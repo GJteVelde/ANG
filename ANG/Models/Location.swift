@@ -20,7 +20,7 @@ struct Location {
             streetAndNumber: "streetAndNumber",
             postalCode: "postalCode",
             city: "city",
-            coordinate: "coordinate",
+            clLocation: "coordinate",
             recordType: "Location"
         )
     
@@ -85,13 +85,18 @@ struct Location {
     
     var coordinate: CLLocationCoordinate2D {
         get {
-            let fetchedCoordinate = record.value(forKey: Location.keys.coordinate) as! CLLocation
+            let fetchedCoordinate = record.value(forKey: Location.keys.clLocation) as! CLLocation
             let coordinate = CLLocationCoordinate2D(latitude: fetchedCoordinate.coordinate.latitude, longitude: fetchedCoordinate.coordinate.longitude)
             return coordinate
         }
+    }
+    
+    var clLocation: CLLocation {
+        get {
+            return record.value(forKey: Location.keys.clLocation) as! CLLocation
+        }
         set {
-            let coordinate = CLLocation(latitude: newValue.latitude, longitude: newValue.longitude)
-            record.setValue(coordinate, forKey: Location.keys.coordinate)
+            record.setValue(newValue, forKey: Location.keys.clLocation)
         }
     }
 }

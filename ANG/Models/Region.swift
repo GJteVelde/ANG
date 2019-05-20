@@ -143,12 +143,12 @@ extension Region {
         case 0:
             return "Er is nog geen favoriete afdeling geselecteerd."
         case 1:
-            return "Uw favoriete afdeling is \(favoriteRegionNames.first!)."
+            return "Mijn favoriete afdeling is \(favoriteRegionNames.first!)."
         default:
             var tempFavoriteRegionNames = favoriteRegionNames
             let lastRegion = tempFavoriteRegionNames.removeLast()
             let favoriteRegionString = tempFavoriteRegionNames.joined(separator: ", ")
-            return "Uw favoriete afdelingen zijn \(favoriteRegionString) en \(lastRegion)."
+            return "Mijn favoriete afdelingen zijn \(favoriteRegionString) en \(lastRegion)."
         }
     }
 }

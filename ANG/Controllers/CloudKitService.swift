@@ -139,6 +139,7 @@ extension CloudKitService {
                     completionHandler(.failure(error!))
                     return
                 }
+                favoriteCafes.sort()
                 completionHandler(.success(favoriteCafes))
             }
         }
@@ -152,10 +153,9 @@ extension CloudKitService {
      Metod to fetch basic details only of cafes in the specified regions.
     */
     func fetchCafesBasicsInRegions(_ regionIds: [Region.RecordId], completionHandler: @escaping ((Result<[Cafe], Error>) -> Void)) {
+        let regionReferences = regionIds.map() { CKRecord.Reference(recordID: $0.recordId, action: .none) }
         
-        let regionRecordIds = regionIds.map() { CKRecord.Reference(recordID: $0.recordId, action: .none) }
-        
-        let predicate = NSPredicate(format: "\(Cafe.keys.region) IN %@", argumentArray: [regionRecordIds])
+        let predicate = NSPredicate(format: "\(Cafe.keys.region) IN %@", argumentArray: [regionReferences])
         let query = CKQuery(recordType: Cafe.keys.recordType, predicate: predicate)
         
         let sort = NSSortDescriptor(key: Cafe.keys.name, ascending: true)
@@ -180,6 +180,37 @@ extension CloudKitService {
             }
             DispatchQueue.main.async {
                 completionHandler(.success(cafes))
+            }
+        }
+        
+        DispatchQueue.global().async {
+            self.publicDatabase.add(fetchCafesOperation)
+        }
+    }
+    
+    func fetchCafesBasicsAtLocations(_ locations: [Location], completionHandler: @escaping ((Result<[Cafe], Error>) -> Void)) {
+        let locationReferences = locations.map() { CKRecord.Reference(recordID: $0.recordId.recordId, action: .none) }
+        
+        let predicate = NSPredicate(format: "ANY %@ in \(Cafe.keys.locations)", argumentArray: [locationReferences])
+        //let predicate = NSPredicate(format: "\(Cafe.keys.locations) CONTAINS %@", argumentArray: [locationReferences])
+        let query = CKQuery(recordType: Cafe.keys.recordType, predicate: predicate)
+        
+        let fetchCafesOperation = CKQueryOperation(query: query)
+        
+        var fetchedCafes = [Cafe]()
+        
+        fetchCafesOperation.recordFetchedBlock = { (record) in
+            let newCafe = Cafe(record: record)
+            fetchedCafes.append(newCafe)
+        }
+        
+        fetchCafesOperation.queryCompletionBlock = { (_, error) in
+            DispatchQueue.main.async {
+                if let error = error {
+                    completionHandler(.failure(error))
+                } else {
+                    completionHandler(.success(fetchedCafes))
+                }
             }
         }
         
@@ -303,7 +334,7 @@ extension CloudKitService {
         var locations = [Location]()
         
         let fetchLocationsOperation = CKFetchRecordsOperation(recordIDs: locationRecordIds)
-        fetchLocationsOperation.desiredKeys = [Location.keys.coordinate]
+        fetchLocationsOperation.desiredKeys = [Location.keys.clLocation, Location.keys.type, Location.keys.name, Location.keys.streetAndNumber, Location.keys.postalCode, Location.keys.city]
         fetchLocationsOperation.qualityOfService = .userInitiated
         
         fetchLocationsOperation.perRecordCompletionBlock = { (record, recordId, error) in
@@ -324,6 +355,37 @@ extension CloudKitService {
         
         DispatchQueue.global().async {
             self.publicDatabase.add(fetchLocationsOperation)
+        }
+    }
+    
+    func fetchLocationsBasicsWithRadius(inKm radiusInKm: CLLocationDistance, around location: CLLocation, completionHandler: @escaping ((Result<[Location], Error>) -> Void)) {
+        let predicate = NSPredicate(format: "distanceToLocation:fromLocation:(\(Location.keys.clLocation), %@) < %f", location, (radiusInKm * 1000))
+        let locationQuery = CKQuery(recordType: Location.keys.recordType, predicate: predicate)
+        
+        let sortDescriptor = CKLocationSortDescriptor(key: Location.keys.clLocation, relativeLocation: location)
+        locationQuery.sortDescriptors = [sortDescriptor]
+        
+        let locationQueryOperation = CKQueryOperation(query: locationQuery)
+        
+        var fetchedLocations = [Location]()
+        
+        locationQueryOperation.recordFetchedBlock = { (record) in
+            let newLocation = Location(record: record)
+            fetchedLocations.append(newLocation)
+        }
+        
+        locationQueryOperation.queryCompletionBlock = { (_, error) in
+            DispatchQueue.main.async {
+                if let error = error {
+                    completionHandler(.failure(error))
+                } else {
+                    completionHandler(.success(fetchedLocations))
+                }
+            }
+        }
+        
+        DispatchQueue.global().async {
+            self.publicDatabase.add(locationQueryOperation)
         }
     }
 }
